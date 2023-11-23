@@ -1,0 +1,20 @@
+{
+  "header": "# 版本日志 | Changelog \n\n",
+  "types": [
+    { "type": "feat", "section": "新增功能 | Features" },
+    { "type": "fix", "section": "修复缺陷 | Bug Fixes" },
+    { "type": "docs", "section": "文档更新 | Documentation" },
+    { "type": "style", "section": "代码格式 | Styles" },
+    { "type": "refactor", "section": "代码重构 | Code Refactoring" },
+    { "type": "perf", "section": "性能提升 | Performance Improvements" },
+    { "type": "test", "section": "测试相关 | Tests" },
+    { "type": "build", "section": "构建相关 | Build System" },
+    { "type": "ci", "section": "持续集成 | Continuous Integration", "hidden": true },
+    { "type": "chore", "section": "其他修改 | Chore", "hidden": true },
+    { "type": "revert", "section": "回退代码 | Revert", "hidden": true }
+  ],
+  "bumpFiles": [
+    { "filename": "package.json", "type": "json" },
+    { "filename": "plugin.json", "type": "json" }
+  ]
+}

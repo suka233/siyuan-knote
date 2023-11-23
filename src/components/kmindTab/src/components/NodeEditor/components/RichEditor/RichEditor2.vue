@@ -1,0 +1,169 @@
+<template>
+  <a-modal
+    v-model:visible="visible"
+    width="1000px"
+    :title="type === 'node' ? '请输入节点文本' : '请输入备注文本'"
+    @ok="handleOk"
+  >
+    <div>
+      <div id="editor" ref="editorRef"></div>
+    </div>
+  </a-modal>
+</template>
+
+<script lang="tsx">
+export default {
+  name: 'RichEditor2'
+}
+</script>
+
+<script lang="tsx" setup>
+import { computed, onMounted, ref } from 'vue'
+// import { QuillEditor, Quill } from '@vueup/vue-quill'
+// import '@vueup/vue-quill/dist/vue-quill.snow.css'
+// import '@vueup/vue-quill/dist/vue-quill.bubble.css'
+// import { kmind } from '/src/components/kmindTab/src/hooks/useKmind'
+import Quill from 'quill'
+import 'quill/dist/quill.snow.css'
+// import QuillMarkdown from 'quilljs-markdown'
+// import 'quilljs-markdown/dist/quilljs-markdown-common-style.css'
+// import ImageResize from 'quill-image-resize-module'
+// Quill.register('modules/imageResize', ImageResize)
+
+// import { uploadAsset } from '/src/components/kmindTab/src/api/public';
+// import { message } from 'ant-design-vue';
+const props = defineProps<{
+  visible: boolean
+  node: any
+  /**
+   * node: 节点文本
+   * note: 备注文本
+   */
+  type: 'node' | 'note'
+}>()
+const emits = defineEmits<{
+  (event: 'update:visible', visible: boolean): void
+}>()
+
+const visible = computed({
+  get() {
+    return props.visible
+  },
+  set() {
+    emits('update:visible', !visible.value)
+  }
+})
+
+const editorContent = ref('')
+
+const handleOk = () => {
+  if (props.type === 'node') {
+    props.node.setText(quill.value.root.innerHTML ?? '', true)
+    // TODO 使用 html-to-text 转换为纯文本 构建纯文本文档树，用来支撑搜索，大纲，插入导图内超链接等功能
+    // props.node.nodeData.data.kmindParams = `测试额外数据`;
+  } else {
+    // 即使编辑器为空，editorContent.value也会有一个p标签，所以需要判断一下
+    if (editorContent.value !== '<p><br></p>') {
+      props.node.setNote(quill.value.root.innerHTML ?? '')
+    } else {
+      props.node.setNote('')
+    }
+  }
+  visible.value = false
+}
+
+// const handlePicLoad = async (files: FileList) => {
+//     const file = files[0];
+//     if (!file) {
+//         return;
+//     }
+//     const isImage = file.type.indexOf('image/') === 0;
+//     if (!isImage) {
+//         message.error('暂时仅支持图片格式');
+//         return;
+//     }
+//
+//     const hide = message.loading('正在将图片上传到思源文件夹...', 0);
+//     const picUrl = await uploadAsset({ file }).then((res) => {
+//         hide();
+//         message.success('图片上传成功');
+//         return res.data.succMap[file.name];
+//     });
+//     const range = quill.value.getSelection();
+//     // TODO 有个bug,插入图片后，光标不能定位到图片后面，需要开关一下编辑器才能定位到图片后面
+//     quill.value.insertEmbed(
+//         range.index,
+//         'image',
+//         `${import.meta.env.VITE_BASE_URL}/${picUrl}`,
+//     );
+// };
+
+const init = () => {
+  if (props.type === 'node') {
+    // editorContent.value = props.node?.getData('text') ?? ''
+    // quill.value.setContents(props.node?.getData('text') ?? '')
+    // console.log(editorRef.value)
+    quill.value.root.innerHTML = props.node?.getData('text') ?? ''
+  } else {
+    // editorContent.value = props.node?.getData('note') ?? ''
+    // quill.value.setContents(props.node?.getData('note') ?? '')
+    quill.value.root.innerHTML = props.node?.getData('note') ?? ''
+  }
+}
+
+const quill = ref<any>(null)
+
+const editorRef = ref<any>(null)
+// const quillMarkdown = ref(null)
+onMounted(() => {
+  // Quill.register('modules/QuillMarkdown', QuillMarkdown, true)
+  // @ts-ignore
+  quill.value = new Quill(editorRef.value, {
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+        ['blockquote', 'code-block'],
+
+        [{ header: 1 }, { header: 2 }], // custom button values
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+        [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+        [{ direction: 'rtl' }], // text direction
+
+        [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+        [{ font: [] }],
+        [{ align: [] }],
+
+        ['clean'],
+
+        ['formula'],
+        ['image'],
+        ['video'],
+        ['link']
+      ]
+    },
+    theme: 'snow',
+    placeholder: '请输入内容'
+  })
+  // quillMarkdown.value = new QuillMarkdown(quill.value, {})
+  // console.log(quillMarkdown.value)
+
+  quill.value.root.style.height = '300px'
+
+  quill.value.root.classList.add('bg-gray-300/20', 'overflow-y-auto!', 'p-2!')
+
+  init()
+
+  setTimeout(() => {
+    // quill会在初始化时自动插入一个p标签，所以length需要-1
+    quill.value.setSelection(quill.value.getLength() - 1, 0)
+  })
+
+  // quill.value.focus()
+})
+</script>
+
+<style scoped lang="less"></style>
