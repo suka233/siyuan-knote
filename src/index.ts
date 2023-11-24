@@ -1,20 +1,19 @@
 import { createApp } from 'vue'
 import DialogApp from '@/components/kmindDialog/index.vue'
-import siyuan, { Plugin, Menu, getFrontend, openTab, Dialog } from 'siyuan'
+import siyuan, { Plugin, getFrontend, openTab, Dialog } from 'siyuan'
 import type { IModel, ITab } from 'siyuan'
 // import './index.sass'
 import 'uno.css'
 import { knoteIcon } from './assets/icon'
-import { initKNoteDock, initKvideoTab, registerIcon } from '@/utils'
+import { initKNoteDock, registerIcon } from '@/utils'
 import Antd from 'ant-design-vue'
 // import { useKVideoRenderer } from '@/hooks/useKVideoRenderer'
 import mitt from '@/hooks/useMitt'
 import './assets/index.less'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
-import { useQuickInput } from '@/components/knoteDock/src/hooks/useQuickInput'
 export default class KvideoPlugin extends Plugin {
   private isMobile!: boolean
-  public menuElement!: HTMLElement
+  // public menuElement!: HTMLElement
   public dialogElement!: HTMLElement
   private static readonly GLOBAL: Record<string, any> = globalThis
   private static readonly PROPERTY_NAME: string = 'kvideoApi'
@@ -46,19 +45,19 @@ export default class KvideoPlugin extends Plugin {
     this.isMobile = frontEnd === 'mobile' || frontEnd === 'browser-mobile'
 
     // 初始化顶栏菜单按钮
-    this.menuElement = this.addTopBar({
-      icon: 'iconKnote',
-      title: this.i18n.openKvideo,
-      position: 'right',
-      callback: () => {
-        let rect = this.menuElement.getBoundingClientRect()
-        // 如果被隐藏，则使用更多按钮
-        if (rect.width === 0) {
-          rect = document.querySelector('#barMore')!.getBoundingClientRect()
-        }
-        this.addMenu(rect)
-      }
-    })
+    // this.menuElement = this.addTopBar({
+    //   icon: 'iconKnote',
+    //   title: this.i18n.openKvideo,
+    //   position: 'right',
+    //   callback: () => {
+    //     let rect = this.menuElement.getBoundingClientRect()
+    //     // 如果被隐藏，则使用更多按钮
+    //     if (rect.width === 0) {
+    //       rect = document.querySelector('#barMore')!.getBoundingClientRect()
+    //     }
+    //     this.addMenu(rect)
+    //   }
+    // })
 
     // 初始化tab
     // this.tab = initKvideoTab(this)
@@ -90,41 +89,41 @@ export default class KvideoPlugin extends Plugin {
   }
 
   onunload() {
-    this.menuElement?.remove()
+    // this.menuElement?.remove()
     delete KvideoPlugin.GLOBAL[KvideoPlugin.PROPERTY_NAME]
   }
 
   // 创建菜单
-  private addMenu(rect: DOMRect) {
-    const menu = new Menu('Kvideo')
-
-    menu.addItem({
-      icon: 'iconInfo',
-      label: 'KNote全局配置',
-      click: () => {
-        // this.openConfigDialog('Kmind全局配置', 'GlobalConfig')
-        console.log('Kvideo全局配置')
-        mitt.emit('suka', 'suka mitt')
-      }
-    })
-
-    // menu.addItem({
-    //   icon: 'iconInfo',
-    //   label: 'Kmind文件夹',
-    //   click: () => {
-    //     this.openConfigDialog('Kmind文件夹', 'KmindDock')
-    //   }
-    // })
-
-    if (this.isMobile) {
-      menu.fullscreen()
-    } else {
-      menu.open({
-        x: rect.left,
-        y: rect.bottom
-      })
-    }
-  }
+  // private addMenu(rect: DOMRect) {
+  //   const menu = new Menu('Kvideo')
+  //
+  //   menu.addItem({
+  //     icon: 'iconInfo',
+  //     label: 'KNote全局配置',
+  //     click: () => {
+  //       // this.openConfigDialog('Kmind全局配置', 'GlobalConfig')
+  //       console.log('Kvideo全局配置')
+  //       mitt.emit('suka', 'suka mitt')
+  //     }
+  //   })
+  //
+  //   // menu.addItem({
+  //   //   icon: 'iconInfo',
+  //   //   label: 'Kmind文件夹',
+  //   //   click: () => {
+  //   //     this.openConfigDialog('Kmind文件夹', 'KmindDock')
+  //   //   }
+  //   // })
+  //
+  //   if (this.isMobile) {
+  //     menu.fullscreen()
+  //   } else {
+  //     menu.open({
+  //       x: rect.left,
+  //       y: rect.bottom
+  //     })
+  //   }
+  // }
 
   // 打开tab页
   open(name, videoId?: string, videoUrl?: string) {

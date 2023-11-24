@@ -1,7 +1,7 @@
 {
   "name": "knote-plugin",
   "author": "suka233",
-  "url": "https://github.com/suka233/siyuan-kmind-plugin",
+  "url": "https://github.com/suka233/siyuan-knote",
   "version": "1.0.0",
   "minAppVersion": "2.8.10",
   "backends": ["all"],
