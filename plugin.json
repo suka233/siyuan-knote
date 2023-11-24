@@ -1,0 +1,24 @@
+{
+  "name": "knote-plugin",
+  "author": "suka233",
+  "url": "https://github.com/suka233/siyuan-knote",
+  "version": "1.0.0",
+  "minAppVersion": "2.8.10",
+  "backends": ["all"],
+  "frontends": ["all"],
+  "displayName": {
+    "zh_CN": "KNote插件",
+    "en_US": "KNote plugin"
+  },
+  "description": {
+    "zh_CN": "将daily note笔记法和思源结合起来",
+    "en_US": "Quickly view your daily note"
+  },
+  "readme": {
+    "zh_CN": "README.md"
+  },
+  "i18n": ["zh_CN"],
+  "funding": {
+    "custom": ["https://wj.qq.com/s2/12591272/adf1/"]
+  }
+}
