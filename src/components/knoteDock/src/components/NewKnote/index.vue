@@ -1,23 +1,33 @@
 <template>
   <div class="包裹 m-2">
-    <div class="头部">
-      <div class="前面区域 cursor-pointer" @click="shrink">{{ dayjs().format('YYYY-MM-DD hh:mm') }} 收缩</div>
+    <div class="p-2">
+      <a-row>
+        <a-col :span="12"
+          ><div class="cursor-pointer text-3" @click="save">{{ dayjs().format('YYYY-MM-DD hh:mm') }} 保存</div></a-col
+        >
+        <a-col :span="12" class="text-right"
+          ><span class="cursor-pointer text-3" @click="close">关闭不保存</span></a-col
+        >
+      </a-row>
     </div>
     <!--    <div class="内容"><a-textarea v-model:value="content" :rows="5" :maxRow="5" class="输入区域" @keyup.enter="shrink" /></div>-->
     <div class="内容">
       <v-textarea
+        ref="inputRef"
         v-model="knote.content"
         class="输入区域"
-        @keydown.enter="shrink"
+        @keydown.enter="handleEnter"
         no-resize
         :base-color="colorMap[knote.type].mainColor"
         bg-color="transparent"
         :hide-details="true"
+        :label="knote.type"
+        placeholder="按下回车键结束编辑并保存"
       />
     </div>
     <div class="尾部">
       <div class="前面区域">
-        <si-yuan-icon @click="test" />
+        <!--        <si-yuan-icon @click="test" />-->
       </div>
       <div class="尾部区域">
         <div class="类型切换">
@@ -46,42 +56,11 @@ import dayjs from 'dayjs'
 import { colorMap } from '@/components/knoteDock/src/config'
 import { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
-import { appendBlock, setBlockAttrs } from '@/api/public'
-import { message } from 'ant-design-vue'
-const { refreshSiyuanKnotes, showNewKnote, dailyNotebookId, selectDateDailyDocId, allSiyuanKnotes, skipTransactions } =
-  useData()
+
+const { showNewKnote, sendToSiYuan } = useData()
 
 const knote = ref(new KNoteModel())
-const test = () => {}
 
-const sendToSiYuan = async () => {
-  if (dailyNotebookId.value) {
-    if (!selectDateDailyDocId.value) {
-      return message.error('当天日记不存在，新建失败')
-    }
-    // 如果存在
-    // 先插入到思源
-    const res = await appendBlock({
-      dataType: 'markdown',
-      // parentID: '20231113112300-s2a6pi6',
-      parentID: selectDateDailyDocId.value,
-      data: `>${knote.value.content}`
-    })
-
-    const blockId = res.data[0].doOperations[0].id
-
-    // 设置块属性
-    setBlockAttrs({
-      id: blockId,
-      attrs: {
-        'custom-knote-id': `${knote.value.id}`,
-        'custom-b': knote.value.type
-      }
-    })
-  } else {
-    message.error('请先设置思源笔记本')
-  }
-}
 const shrink = async (e?: KeyboardEvent) => {
   e?.preventDefault()
   if (e?.shiftKey) {
@@ -93,20 +72,37 @@ const shrink = async (e?: KeyboardEvent) => {
     return
   }
   // 发送到思源，隐藏此组件，刷新
-  sendToSiYuan()
+  sendToSiYuan(knote.value)
   showNewKnote.value = false
-  allSiyuanKnotes.value = [knote.value, ...allSiyuanKnotes.value]
+}
+
+const handleEnter = (e: KeyboardEvent) => {
+  if (e.shiftKey) {
+    return
+  }
+  shrink(e)
+}
+
+const save = () => {
+  shrink()
+}
+
+const close = () => {
+  showNewKnote.value = false
 }
 
 const changeType = (type: string) => {
   knote.value.type = type
 }
-
+const inputRef = ref()
 watch(
   () => showNewKnote.value,
   (newVal) => {
     if (newVal) {
       knote.value = new KNoteModel()
+      setTimeout(() => {
+        inputRef.value!.focus()
+      }, 200)
     }
   }
 )

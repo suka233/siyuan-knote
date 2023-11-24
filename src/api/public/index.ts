@@ -74,9 +74,9 @@ export const putFile = ({ file = '', path = '/data/storage/petal/kmind/', isDir 
  */
 export const putFileDirect = ({
   target = {},
-  fileName = 'kmind',
-  suffix = 'kmind',
-  path = '/data/storage/petal/kmind/',
+  fileName = 'knote',
+  suffix = 'knote',
+  path = '/data/storage/petal/knote/',
   isDir = false,
   modeTime = Date.now()
 }) => {
@@ -108,7 +108,6 @@ export const putFileDirect = ({
 export const putKmindFile = ({ target = {}, fileName = 'kmind' }) => {
   return putFileDirect({ target, fileName, suffix: 'kmind', path: '/data/storage/petal/kmind/' })
 }
-
 /**
  * 写入插件版kmind temp配置文件
  * 注意，思源的这个putFile接口，path要写全路径，包括文件名+后缀，不然会报错
@@ -119,6 +118,19 @@ export const putKmindTempConfigFile = (target: KmindTempConfigType = {}) => {
     fileName: 'temp',
     suffix: 'kmindconf',
     path: '/data/storage/petal/kmind/config/temp.kmindconf'
+  })
+}
+
+/**
+ * 写入插件版knote配置文件
+ * 注意，思源的这个putFile接口，path要写全路径，包括文件名+后缀，不然会报错
+ */
+export const putKnoteConfigFile = (target?: { dailyNotebookId: string }) => {
+  return putFileDirect({
+    target,
+    fileName: 'user',
+    suffix: 'knoteconf',
+    path: '/data/storage/petal/knote/user.knoteconf'
   })
 }
 

@@ -86,3 +86,10 @@ declare interface KmindTempConfigType {
    */
   newFeatNotify: Record<string, string | boolean>
 }
+
+declare interface KnoteTempConfigType {
+  /**
+   * 选择的笔记本
+   */
+  dailyNotebookId: string
+}

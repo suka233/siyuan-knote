@@ -73,18 +73,18 @@ export default class KvideoPlugin extends Plugin {
     this.eventBus.on('open-siyuan-url-plugin', (e) => {
       console.log(e)
     })
-    const { refreshSiyuanKnotes } = useData()
+    const { refreshSiyuanKnotes, showQuickInput } = useData()
     this.eventBus.on('ws-main', (e) => {
       if (e.detail.cmd === 'databaseIndexCommit') {
-        console.log(`检测到合法：${e}`)
+        // console.log(`检测到合法：${e}`)
         refreshSiyuanKnotes()
       }
     })
     this.addCommand({
       langKey: 'openQuickInput',
-      hotkey: '⇧⌘K',
+      hotkey: '⇧⌘Q',
       callback: () => {
-        useQuickInput(knoteApp)
+        showQuickInput.value = true
       }
     })
   }
