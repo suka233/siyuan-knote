@@ -36,7 +36,7 @@ const showNewKnote = ref(false)
 const showQuickInput = ref(false)
 
 // 展示粒度：day,all
-const displayMode = ref<'day' | 'all'>('day')
+const displayMode = ref<'day' | 'all'>('all')
 
 export const useData = () => {
   const refreshSiyuanKnotes = async () => {
