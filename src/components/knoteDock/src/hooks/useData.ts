@@ -1,16 +1,6 @@
 // 是否展示抽屉设置栏
 import { ref } from 'vue'
-import {
-  appendBlock,
-  listFile,
-  querySql,
-  setBlockAttrs,
-  putFile,
-  putKnoteTempConfigFile,
-  putKnoteConfigFile,
-  putFileDirect,
-  getFile
-} from '@/api/public'
+import { appendBlock, listFile, querySql, setBlockAttrs, putFile, putKnoteConfigFile, getFile } from '@/api/public'
 import dayjs from 'dayjs'
 import type { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
 import { message } from 'ant-design-vue'
@@ -34,7 +24,7 @@ const allSiyuanKnotes = ref<KNoteModel[]>([])
 const today = ref(dayjs().format('YYYY-MM-DD'))
 
 // 选择的日期
-const selectedDay = ref('')
+const selectedDay = ref(dayjs().format('YYYY-MM-DD'))
 
 // 选择的日期的日记文档id
 const selectDateDailyDocId = ref('')
@@ -45,27 +35,33 @@ const showNewKnote = ref(false)
 // 是否展示全局快速输入框
 const showQuickInput = ref(false)
 
+// 展示粒度：day,all
+const displayMode = ref<'day' | 'all'>('day')
+
 export const useData = () => {
   const refreshSiyuanKnotes = async () => {
-    querySql(
-      `select * from blocks where box = "${dailyNotebookId.value}" and hpath like "/daily note/%${selectedDay.value}" and type = 'b' `
-    ).then((res) => {
+    // 查出所有的callout
+    const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${selectedDay.value}' and type = 'b' `
+    // const allSql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%' and type = 'b' limit 100000`
+    // 先按日期倒叙排列，再按更新时间倒叙排列
+    const allSql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%' and type = 'b' ORDER BY SUBSTR(hpath, -10) DESC,updated DESC limit 100000`
+
+    querySql(displayMode.value === 'day' ? daySql : allSql).then((res) => {
       // 匹配custom-b=""的字符串
       const regex = /custom-b="(.*?)"/
 
-      allSiyuanKnotes.value = res.data
-        .map((item) => {
-          const str = item.ial
-          const match = str.match(regex)
-          // console.log(str.match(regex))
-          return {
-            id: item.id,
-            content: item.content,
-            showMode: 'simple',
-            type: match?.[1] || 'default'
-          }
-        })
-        .reverse()
+      allSiyuanKnotes.value = res.data.map((item) => {
+        const str = item.ial
+        const match = str.match(regex)
+        // console.log(str.match(regex))
+        return {
+          id: item.id,
+          content: item.content,
+          showMode: 'simple',
+          type: match?.[1] || 'default',
+          hpath: item.hpath
+        }
+      })
       // console.log(allSiyuanKnotes.value)
     })
   }
@@ -74,8 +70,9 @@ export const useData = () => {
     if (!dailyNotebookId.value) {
       return message.error('KNote: 请先设置思源笔记本')
     }
-    const sql = `select * from blocks where box = "${dailyNotebookId.value}" and hpath like "/daily note/%${date}" and type = 'd'`
-    querySql(sql).then((res) => {
+    const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${date}' and type = 'd'`
+    // const allSql = `select * from blocks where box = "${dailyNotebookId.value}" and hpath like "/daily note/%${date}" and type = 'd'`
+    querySql(daySql).then((res) => {
       if (res.data.length) {
         selectDateDailyDocId.value = res.data[0].id
         // 存在
@@ -113,6 +110,9 @@ export const useData = () => {
       }
     })
 
+    // 构造一个假的hath，适配按日期分组的功能
+    knote.hpath = `/daily note/${selectedDay.value}`
+    // 优化用户体验，添加的时候直接push进数组，因为如果等待思源更新后再从思源获取，会有延迟
     allSiyuanKnotes.value = [knote, ...allSiyuanKnotes.value]
   }
   const getConfig = async () => {
@@ -125,18 +125,23 @@ export const useData = () => {
 
       // 创建knote配置文件
       await putKnoteConfigFile({
-        dailyNotebookId: ''
+        dailyNotebookId: '',
+        displayMode: 'day'
       })
     } else {
       // 获取配置文件内容
-      const { dailyNotebookId: _dailyNotebookId } = await getFile({ path: '/data/storage/petal/knote/user.knoteconf' })
-      dailyNotebookId.value = _dailyNotebookId
+      const { dailyNotebookId: _dailyNotebookId, displayMode: _displayMode } = await getFile({
+        path: '/data/storage/petal/knote/user.knoteconf'
+      })
+      dailyNotebookId.value = _dailyNotebookId ?? ''
+      displayMode.value = _displayMode ?? 'day'
     }
   }
 
   const saveConfig = async () => {
     putKnoteConfigFile({
-      dailyNotebookId: dailyNotebookId.value
+      dailyNotebookId: dailyNotebookId.value,
+      displayMode: displayMode.value
     })
   }
   return {
@@ -154,6 +159,7 @@ export const useData = () => {
     showQuickInput,
     sendToSiYuan,
     getConfig,
-    saveConfig
+    saveConfig,
+    displayMode
   }
 }

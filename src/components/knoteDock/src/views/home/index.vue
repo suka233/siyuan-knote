@@ -1,10 +1,14 @@
 <template>
   <div class="relative flex flex-col" ref="wrapRef">
-    <tool-bar class="" />
-    <control-bar />
+    <tool-bar />
+    <!--    <control-bar />-->
     <new-knote v-show="showNewKnote" ref="newKnoteRef" />
     <div class="KNote-Container overflow-y-auto" v-show="allSiyuanKnotes.length" ref="knoteContainerRef">
-      <k-note v-for="knote in allSiyuanKnotes" :key="knote.id" :data="knote" />
+      <!--      <k-note v-for="knote in allSiyuanKnotes" :key="knote.id" :data="knote" />-->
+      <RecycleScroller :items="computedKnotes" class="scroller" key-field="id" v-slot="{ item }" ref="scrollerRef">
+        <k-note :data="item" :key="item.id" v-if="item.type !== 'group'" />
+        <div class="h-46px line-height-46px text-center" v-else>{{ item.group }}</div>
+      </RecycleScroller>
     </div>
     <div v-show="!allSiyuanKnotes.length">暂无可以展示的Knote</div>
     <quick-input v-model:visible="showQuickInput" />
@@ -15,46 +19,78 @@
 import ToolBar from '@/components/knoteDock/src/components/ToolBar/index.vue'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
 import KNote from '../../components/KNote/index.vue'
-import ControlBar from '@/components/knoteDock/src/components/ControlBar/index.vue'
 import NewKnote from '@/components/knoteDock/src/components/NewKnote/index.vue'
 import QuickInput from '@/components/knoteDock/src/components/QuickInput/index.vue'
-import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed } from 'vue'
+import dayjs from 'dayjs'
 const { allSiyuanKnotes, showNewKnote, showQuickInput } = useData()
 
-const wrapRef = ref()
-const newKnoteRef = ref()
-const knoteContainerRef = ref()
-// 计算knoteContainerRef的高度
-onMounted(() => {
-  const resizeHandler = () => {
-    nextTick(() => {
-      const toolbarHeight = 48
-      const controlBarHeight = 32
-      const newKnoteHeight = newKnoteRef.value.$el.offsetHeight
-      const wrapHeight = wrapRef.value.parentNode.parentNode.offsetHeight
-      const knoteContainerHeight = wrapHeight - toolbarHeight - controlBarHeight - newKnoteHeight
-      knoteContainerRef.value.style.height = `${knoteContainerHeight}px`
-    })
+// const wrapRef = ref()
+// const newKnoteRef = ref()
+// const knoteContainerRef = ref()
+// // 计算knoteContainerRef的高度
+// onMounted(() => {
+//   const resizeHandler = () => {
+//     nextTick(() => {
+//       const toolbarHeight = 48
+//       const controlBarHeight = 32
+//       const newKnoteHeight = newKnoteRef.value.$el.offsetHeight
+//       const wrapHeight = wrapRef.value.parentNode.parentNode.offsetHeight
+//       const knoteContainerHeight = wrapHeight - toolbarHeight - controlBarHeight - newKnoteHeight
+//       knoteContainerRef.value.style.height = `${knoteContainerHeight}px`
+//     })
+//   }
+//
+//   // 监听 resize 事件
+//   window.addEventListener('resize', resizeHandler)
+//
+//   watch(
+//     () => showNewKnote.value,
+//     () => {
+//       resizeHandler()
+//     }
+//   )
+//
+//   // 初始设置高度
+//   resizeHandler()
+//
+//   // 在组件卸载时移除事件监听
+//   onUnmounted(() => {
+//     window.removeEventListener('resize', resizeHandler)
+//   })
+// })
+
+const computedKnotes = computed(() => {
+  if (!allSiyuanKnotes.value.length) {
+    return []
   }
+  // 将最后一项作为group
+  const group = Object.groupBy(allSiyuanKnotes.value, (item) => {
+    return item?.hpath?.split('/')?.pop()
+  })
 
-  // 监听 resize 事件
-  window.addEventListener('resize', resizeHandler)
+  // console.log('group', group)
 
-  watch(
-    () => showNewKnote.value,
-    () => {
-      resizeHandler()
+  const result = Object.entries(group).reduce((acc, [key, value]) => {
+    // 使用group作为id，方便后续的虚拟滚动直接跳转到指定的group
+    return [...acc, { group: key, type: 'group', id: key }, ...value]
+  }, [])
+  return result.map((item) => {
+    return {
+      ...item,
+      size: 46
     }
-  )
-
-  // 初始设置高度
-  resizeHandler()
-
-  // 在组件卸载时移除事件监听
-  onUnmounted(() => {
-    window.removeEventListener('resize', resizeHandler)
   })
 })
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.KNote-Container {
+  // 视口 减去 toolbar:42, controlBar:32, 思源的底部状态栏：32, 思源的窗口操作栏:32
+  height: calc(100vh - 42px - 32px - 32px);
+  overflow-y: auto;
+  .scroller {
+    height: 100%;
+  }
+}
+</style>

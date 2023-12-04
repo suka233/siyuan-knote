@@ -64,7 +64,7 @@ export default class KvideoPlugin extends Plugin {
 
     // 初始化dock
     const res = await initKNoteDock(this)
-    console.log('xx', res)
+    // console.log('xx', res)
     // const { updateRenderer } = useKVideoRenderer()
     // this.eventBus.on('ws-main', updateRenderer)
     // mitt.on('suka', updateRenderer)

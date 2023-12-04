@@ -4,6 +4,8 @@ import App from '@/components/kvideoTab/src/App.vue'
 
 import KmindDock from '@/components/kmindDock/index.vue'
 import KnoteDock from '@/components/knoteDock/App.vue'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import VueVirtualScroller from 'vue-virtual-scroller'
 import { createApp } from 'vue'
 import Antd from 'ant-design-vue'
 import { useFile } from '@/hooks/useFile'
@@ -151,8 +153,8 @@ export const initKNoteDock = async (plugin: Plugin) => {
           }
         }
       })
-      knoteApp = createApp(KnoteDock, { plugin })
-      knoteApp.use(Antd).use(vuetify).mount(root)
+      knoteApp = createApp(KnoteDock).provide('plugin', plugin)
+      knoteApp.use(Antd).use(vuetify).use(VueVirtualScroller).mount(root)
       this.data.destroy = () => {
         root && knoteApp.unmount()
       }

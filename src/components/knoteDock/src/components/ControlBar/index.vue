@@ -1,11 +1,5 @@
 <template>
-  <a-config-provider
-    :theme="{
-      token: {
-        borderRadius: 0
-      }
-    }"
-  >
+  <a-config-provider>
     <a-row>
       <a-col :span="12">
         <a-date-picker

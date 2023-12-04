@@ -1,33 +1,24 @@
 <template>
-  <div id="toolbar">
-    <v-toolbar title="KNote" density="compact">
-      <v-toolbar-items>
-        <v-btn class="test" @click="newKnote">新建</v-btn>
-        <v-btn class="test" @click="refresh">刷新</v-btn>
-
-        <!--        <v-menu>-->
-        <!--          <template #activator="{ props }">-->
-        <!--            &lt;!&ndash;            <v-btn v-bind="props" class="test" @click="openWindow" :class="{ 'text-blue': isLock }">测试</v-btn>&ndash;&gt;-->
-        <!--            <v-btn v-bind="props" class="test">测试</v-btn>-->
-        <!--          </template>-->
-
-        <!--          <v-btn class="test">初始化数据</v-btn>-->
-        <!--          <v-btn class="test">初始化1000条数据</v-btn>-->
-        <!--          <v-btn class="test">插入一条测试数据</v-btn>-->
-        <!--          <v-btn class="test" @click="refresh">刷新</v-btn>-->
-        <!--          <v-btn class="test">清空</v-btn>-->
-        <!--          <v-btn class="test">切换到</v-btn>-->
-        <!--        </v-menu>-->
-      </v-toolbar-items>
-      <!--      <v-divider vertical class="mx-2" />-->
-
-      <!--      <v-btn icon="mdi-dots-vertical" class="test" />-->
-    </v-toolbar>
+  <div id="toolbar" class="toolbar">
+    <a-row>
+      <a-col :span="4"><span class="title">KNote</span></a-col>
+      <a-col :span="12">
+        <div class="日期选择器">
+          <date-setting />
+        </div>
+      </a-col>
+      <a-col :span="8">
+        <div class="操作按钮" @click="newKnote">新建</div>
+        <div class="操作按钮" @click="refresh">刷新</div>
+        <!--        <setting-pop />-->
+      </a-col>
+    </a-row>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useData } from '@/components/knoteDock/src/hooks/useData'
+import DateSetting from '@/components/knoteDock/src/components/DateSetting/index.vue'
 
 const { refreshSiyuanKnotes, showNewKnote } = useData()
 
@@ -42,4 +33,31 @@ const refresh = () => {
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+#toolbar {
+  height: 42px;
+  line-height: 42px;
+}
+
+.toolbar {
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .日期选择器 {
+    line-height: 46px;
+  }
+
+  .操作按钮 {
+    display: inline-block;
+    width: 42px;
+    height: 42px;
+    cursor: pointer;
+    text-align: center;
+
+    &:hover {
+      background-color: #dfe0e1;
+    }
+  }
+}
+</style>

@@ -125,7 +125,11 @@ export const putKmindTempConfigFile = (target: KmindTempConfigType = {}) => {
  * 写入插件版knote配置文件
  * 注意，思源的这个putFile接口，path要写全路径，包括文件名+后缀，不然会报错
  */
-export const putKnoteConfigFile = (target?: { dailyNotebookId: string }) => {
+export interface IKnoteConfig {
+  dailyNotebookId: string
+  displayMode: 'day' | 'all'
+}
+export const putKnoteConfigFile = (target?: IKnoteConfig) => {
   return putFileDirect({
     target,
     fileName: 'user',
