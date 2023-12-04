@@ -41,7 +41,7 @@ const displayMode = ref<'day' | 'all'>('all')
 export const useData = () => {
   const refreshSiyuanKnotes = async () => {
     // 查出所有的callout
-    const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${selectedDay.value}' and type = 'b' `
+    const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${selectedDay.value}' and type = 'b' limit 100000`
     // const allSql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%' and type = 'b' limit 100000`
     // 先按日期倒叙排列，再按更新时间倒叙排列
     const allSql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%' and type = 'b' ORDER BY SUBSTR(hpath, -10) DESC,updated DESC limit 100000`
