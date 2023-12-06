@@ -46,6 +46,22 @@
                   </a-button>
                 </a-dropdown>
               </a-form-item>
+              <a-form-item>
+                <template #label>
+                  <span>启用新版查询</span>&nbsp;
+                  <a-tooltip>
+                    <template #title>
+                      <p>-支持思源版本(2.11.1+)之后创建的任意路径格式的日记</p>
+                      <p>
+                        -如果需要能够查询到以前的日记，可以使用'今日笔记'插件的[为过去的 Daily Note 补充文档属性]功能
+                      </p>
+                      <p>-下载 '今日笔记' 插件，会有详细的指引</p>
+                    </template>
+                    <QuestionCircleOutlined />
+                  </a-tooltip>
+                </template>
+                <a-switch v-model:checked="useNewQuery" @change="refreshSiyuanKnotes" />
+              </a-form-item>
             </a-form>
           </div>
         </template>
@@ -60,9 +76,9 @@ import { ref } from 'vue'
 import dayjs from 'dayjs'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
 import { listNotebook } from '@/api/public'
-import { SettingOutlined, DownOutlined } from '@ant-design/icons-vue'
+import { SettingOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons-vue'
 const selected = ref(dayjs())
-const { refreshSiyuanKnotes, selectedDay, getTargetDailyDocId, displayMode, dailyNotebookId } = useData()
+const { refreshSiyuanKnotes, selectedDay, getTargetDailyDocId, displayMode, dailyNotebookId, useNewQuery } = useData()
 const dateChange = (value) => {
   console.log(value)
   selectedDay.value = dayjs(value).format('YYYY-MM-DD')
@@ -75,7 +91,7 @@ const disabledDate = (current) => {
   return current && current > dayjs().endOf('day')
 }
 
-const siYuanNoteItems = ref([])
+const siYuanNoteItems = ref<Array<Record<string, any>>>([])
 listNotebook().then((res) => {
   console.log(res)
   siYuanNoteItems.value = res.data.notebooks.map((item: any) => {

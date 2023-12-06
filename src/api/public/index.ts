@@ -128,6 +128,8 @@ export const putKmindTempConfigFile = (target: KmindTempConfigType = {}) => {
 export interface IKnoteConfig {
   dailyNotebookId: string
   displayMode: 'day' | 'all'
+  // 思源2.11.1之后更新了给daily note添加默认属性 custom-dailynote-yyyymmdd
+  useNewQuery: boolean
 }
 export const putKnoteConfigFile = (target?: IKnoteConfig) => {
   return putFileDirect({

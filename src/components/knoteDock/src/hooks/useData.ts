@@ -38,15 +38,32 @@ const showQuickInput = ref(false)
 // 展示粒度：day,all
 const displayMode = ref<'day' | 'all'>('all')
 
+// 使用新版查询
+const useNewQuery = ref(false)
+
 export const useData = () => {
   const refreshSiyuanKnotes = async () => {
     // 查出所有的callout
     const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${selectedDay.value}' and type = 'b' limit 100000`
-    // const allSql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%' and type = 'b' limit 100000`
+    const daySqlNew = `select B.* from blocks as B join attributes as A
+on B.root_id = A.root_id
+where A.name like 'custom-dailynote-${dayjs(selectedDay.value).format('YYYYMMDD')}'
+and B.type = 'b'
+order by A.value desc
+limit 100000;`
+
     // 先按日期倒叙排列，再按更新时间倒叙排列
     const allSql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%' and type = 'b' ORDER BY SUBSTR(hpath, -10) DESC,updated DESC limit 100000`
+    const allSqlNew = `select B.* from blocks as B join attributes as A
+on B.root_id = A.root_id
+where A.name like 'custom-dailynote-%'
+and B.type = 'b'
+order by A.value desc, B.updated desc
+limit 100000;`
 
-    querySql(displayMode.value === 'day' ? daySql : allSql).then((res) => {
+    querySql(
+      displayMode.value === 'day' ? (useNewQuery.value ? daySqlNew : daySql) : useNewQuery.value ? allSqlNew : allSql
+    ).then((res) => {
       // 匹配custom-b=""的字符串
       const regex = /custom-b="(.*?)"/
 
@@ -71,24 +88,30 @@ export const useData = () => {
       return message.error('KNote: 请先设置思源笔记本')
     }
     const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${date}' and type = 'd'`
+    const daySqlNew = `select B.* from blocks as B join attributes as A on B.root_id = A.root_id where A.name like 'custom-dailynote-${dayjs(
+      date
+    ).format('YYYYMMDD')}' and B.type = 'd' order by A.value desc;`
     // const allSql = `select * from blocks where box = "${dailyNotebookId.value}" and hpath like "/daily note/%${date}" and type = 'd'`
-    querySql(daySql).then((res) => {
+    querySql(useNewQuery.value ? daySqlNew : daySql).then((res) => {
       if (res.data.length) {
+        if (res.data.length > 1) {
+          message.info(`KNote:当前笔记本下存在多个${date}的日记，请检查`)
+        }
         selectDateDailyDocId.value = res.data[0].id
         // 存在
         return res.data[0]
       } else {
-        message.error(`不存在${date}的日记，请新建`)
+        message.error(`KNote:不存在${date}的日记，请新建`)
       }
     })
   }
 
   const sendToSiYuan = async (knote: KNoteModel) => {
     if (!dailyNotebookId.value) {
-      return message.error('请先设置思源笔记本')
+      return message.error('KNote:请先设置思源笔记本')
     }
     if (!selectDateDailyDocId.value) {
-      return message.error('当天日记不存在，新建失败')
+      return message.error('KNote:当天日记不存在，新建失败')
     }
     // 如果存在
     // 先插入到思源
@@ -126,22 +149,29 @@ export const useData = () => {
       // 创建knote配置文件
       await putKnoteConfigFile({
         dailyNotebookId: '',
-        displayMode: 'day'
+        displayMode: 'day',
+        useNewQuery: false
       })
     } else {
       // 获取配置文件内容
-      const { dailyNotebookId: _dailyNotebookId, displayMode: _displayMode } = await getFile({
+      const {
+        dailyNotebookId: _dailyNotebookId,
+        displayMode: _displayMode,
+        useNewQuery: _useNewQuery
+      } = await getFile({
         path: '/data/storage/petal/knote/user.knoteconf'
       })
       dailyNotebookId.value = _dailyNotebookId ?? ''
       displayMode.value = _displayMode ?? 'day'
+      useNewQuery.value = _useNewQuery ?? false
     }
   }
 
   const saveConfig = async () => {
     putKnoteConfigFile({
       dailyNotebookId: dailyNotebookId.value,
-      displayMode: displayMode.value
+      displayMode: displayMode.value,
+      useNewQuery: useNewQuery.value
     })
   }
   return {
@@ -160,6 +190,7 @@ export const useData = () => {
     sendToSiYuan,
     getConfig,
     saveConfig,
-    displayMode
+    displayMode,
+    useNewQuery
   }
 }
