@@ -65,7 +65,7 @@ export const useData = () => {
   const refreshSiyuanKnotes = async () => {
     // 查出所有的callout
     const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${selectedDay.value}' and type = 'b' limit 100000`
-    const daySqlNew = `select B.* from blocks as B join attributes as A
+    const daySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A
 on B.root_id = A.root_id
 where B.box = '${dailyNotebookId.value}'
 and A.name like 'custom-dailynote-${dayjs(selectedDay.value).format('YYYYMMDD')}'
@@ -75,7 +75,7 @@ limit 100000;`
 
     // 先按日期倒叙排列，再按更新时间倒叙排列
     const allSql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%' and type = 'b' ORDER BY SUBSTR(hpath, -10) DESC,updated DESC limit 100000`
-    const allSqlNew = `select B.* from blocks as B join attributes as A
+    const allSqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A
 on B.root_id = A.root_id
 where B.box = '${dailyNotebookId.value}' 
 and A.name like 'custom-dailynote-%'
@@ -98,7 +98,9 @@ limit 100000;`
           content: item.content,
           showMode: 'simple',
           type: match?.[1] || 'default',
-          hpath: item.hpath
+          // hpath: item.hpath
+          // knote_date: custom-dailynote-YYYYMMDD
+          hpath: useNewQuery.value ? `/${dayjs(item.knote_date.split('-').pop()).format('YYYY-MM-DD')}` : item.hpath
         }
       })
       // console.log(allSiyuanKnotes.value)
@@ -110,12 +112,12 @@ limit 100000;`
       return message.error('KNote: 请先设置思源笔记本')
     }
     const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${date}' and type = 'd'`
-    const daySqlNew = `select B.* from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
+    const daySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
       dailyNotebookId.value
     }' and A.name like 'custom-dailynote-${dayjs(date).format('YYYYMMDD')}' and B.type = 'd' order by A.value desc;`
 
     const todaySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${today.value}' and type = 'd'`
-    const todaySqlNew = `select B.* from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
+    const todaySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
       dailyNotebookId.value
     }' and A.name like 'custom-dailynote-${dayjs(today.value).format(
       'YYYYMMDD'
@@ -176,6 +178,7 @@ limit 100000;`
 
     // 构造一个假的hath，适配按日期分组的功能
     // 这里应该要改了，因为通过新方法获取的数据，可能hpath并不准确了
+    // 又不用改了，因为我在refreshSiyuanKnotes() 中，当使用新查询的时候，把hpath复写成了日期了： /YYY-MM-DD
     knote.hpath = `/daily note/${docId === todayDailyDocId.value ? today.value : selectedDay.value}`
     // 优化用户体验，添加的时候直接push进数组，因为如果等待思源更新后再从思源获取，会有延迟
     allSiyuanKnotes.value = [knote, ...allSiyuanKnotes.value]
