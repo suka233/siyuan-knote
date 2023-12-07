@@ -67,7 +67,8 @@ export const useData = () => {
     const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${selectedDay.value}' and type = 'b' limit 100000`
     const daySqlNew = `select B.* from blocks as B join attributes as A
 on B.root_id = A.root_id
-where A.name like 'custom-dailynote-${dayjs(selectedDay.value).format('YYYYMMDD')}'
+where B.box = '${dailyNotebookId.value}'
+and A.name like 'custom-dailynote-${dayjs(selectedDay.value).format('YYYYMMDD')}'
 and B.type = 'b'
 order by A.value desc
 limit 100000;`
@@ -76,7 +77,8 @@ limit 100000;`
     const allSql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%' and type = 'b' ORDER BY SUBSTR(hpath, -10) DESC,updated DESC limit 100000`
     const allSqlNew = `select B.* from blocks as B join attributes as A
 on B.root_id = A.root_id
-where A.name like 'custom-dailynote-%'
+where B.box = '${dailyNotebookId.value}' 
+and A.name like 'custom-dailynote-%'
 and B.type = 'b'
 order by A.value desc, B.updated desc
 limit 100000;`
@@ -108,14 +110,16 @@ limit 100000;`
       return message.error('KNote: 请先设置思源笔记本')
     }
     const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${date}' and type = 'd'`
-    const daySqlNew = `select B.* from blocks as B join attributes as A on B.root_id = A.root_id where A.name like 'custom-dailynote-${dayjs(
-      date
-    ).format('YYYYMMDD')}' and B.type = 'd' order by A.value desc;`
+    const daySqlNew = `select B.* from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
+      dailyNotebookId.value
+    }' and A.name like 'custom-dailynote-${dayjs(date).format('YYYYMMDD')}' and B.type = 'd' order by A.value desc;`
 
     const todaySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${today.value}' and type = 'd'`
-    const todaySqlNew = `select B.* from blocks as B join attributes as A on B.root_id = A.root_id where A.name like 'custom-dailynote-${dayjs(
-      today.value
-    ).format('YYYYMMDD')}' and B.type = 'd' order by A.value desc;`
+    const todaySqlNew = `select B.* from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
+      dailyNotebookId.value
+    }' and A.name like 'custom-dailynote-${dayjs(today.value).format(
+      'YYYYMMDD'
+    )}' and B.type = 'd' order by A.value desc;`
     // const allSql = `select * from blocks where box = "${dailyNotebookId.value}" and hpath like "/daily note/%${date}" and type = 'd'`
     querySql(useNewQuery.value ? daySqlNew : daySql).then((res) => {
       if (res.data.length) {
