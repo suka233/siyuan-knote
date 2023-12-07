@@ -73,7 +73,7 @@ on B.root_id = A.root_id
 where B.box = '${dailyNotebookId.value}'
 and A.name like 'custom-dailynote-${dayjs(selectedDay.value).format('YYYYMMDD')}'
 and B.type = 'b'
-order by A.value desc
+order by B.updated desc
 limit 100000;`
 
     // 先按日期倒叙排列，再按更新时间倒叙排列
