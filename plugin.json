@@ -2,7 +2,7 @@
   "name": "knote-plugin",
   "author": "suka233",
   "url": "https://github.com/suka233/siyuan-knote",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "minAppVersion": "2.8.10",
   "backends": ["all"],
   "frontends": ["all"],
@@ -11,7 +11,7 @@
     "en_US": "KNote plugin"
   },
   "description": {
-    "zh_CN": "将daily note无压笔记法和思源结合起来，想到什么就写什么，无压力做笔记",
+    "zh_CN": "将daily note无压笔记法和思源结合起来，想到什么就写什么，无压力做笔记。实验功能：当前支持任意格式的日记存储路径解析",
     "en_US": "Quickly view your daily note"
   },
   "readme": {
