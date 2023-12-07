@@ -22,8 +22,7 @@ import KNote from '../../components/KNote/index.vue'
 import NewKnote from '@/components/knoteDock/src/components/NewKnote/index.vue'
 import QuickInput from '@/components/knoteDock/src/components/QuickInput/index.vue'
 import { computed } from 'vue'
-import dayjs from 'dayjs'
-const { allSiyuanKnotes, showNewKnote, showQuickInput } = useData()
+const { allSiyuanKnotes, showNewKnote, showQuickInput, panelDisplayMode } = useData()
 
 // const wrapRef = ref()
 // const newKnoteRef = ref()
@@ -71,16 +70,25 @@ const computedKnotes = computed(() => {
 
   // console.log('group', group)
 
-  const result = Object.entries(group).reduce((acc, [key, value]) => {
-    // 使用group作为id，方便后续的虚拟滚动直接跳转到指定的group
-    return [...acc, { group: key, type: 'group', id: key }, ...value]
-  }, [])
-  return result.map((item) => {
-    return {
-      ...item,
-      size: 46
-    }
-  })
+  const result = Object.entries(group)
+    .reduce((acc, [key, value]) => {
+      // 使用group作为id，方便后续的虚拟滚动直接跳转到指定的group
+      return [...acc, { group: key, type: 'group', id: key }, ...value]
+    }, [])
+    // 加上固定高度，方便虚拟滚动计算
+    .map((item) => {
+      return {
+        ...item,
+        size: 46
+      }
+    })
+  // 根据panelDisplayMode过滤
+  if (panelDisplayMode.value !== 'all') {
+    return result.filter((item) => {
+      return item.type === panelDisplayMode.value
+    })
+  }
+  return result
 })
 </script>
 

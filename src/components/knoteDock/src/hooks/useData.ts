@@ -23,6 +23,9 @@ const allSiyuanKnotes = ref<KNoteModel[]>([])
 // 当天的日期
 const today = ref(dayjs().format('YYYY-MM-DD'))
 
+// 今天的日记文档id
+const todayDailyDocId = ref('')
+
 // 选择的日期
 const selectedDay = ref(dayjs().format('YYYY-MM-DD'))
 
@@ -40,6 +43,23 @@ const displayMode = ref<'day' | 'all'>('all')
 
 // 使用新版查询
 const useNewQuery = ref(false)
+
+// 面板展示维度：all,default,info,light,bell,check,wrong,warn,question,error,bug,note,pen
+const panelDisplayMode = ref<
+  | 'all'
+  | 'default'
+  | 'info'
+  | 'light'
+  | 'bell'
+  | 'check'
+  | 'wrong'
+  | 'warn'
+  | 'question'
+  | 'error'
+  | 'bug'
+  | 'note'
+  | 'pen'
+>('all')
 
 export const useData = () => {
   const refreshSiyuanKnotes = async () => {
@@ -91,6 +111,11 @@ limit 100000;`
     const daySqlNew = `select B.* from blocks as B join attributes as A on B.root_id = A.root_id where A.name like 'custom-dailynote-${dayjs(
       date
     ).format('YYYYMMDD')}' and B.type = 'd' order by A.value desc;`
+
+    const todaySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${today.value}' and type = 'd'`
+    const todaySqlNew = `select B.* from blocks as B join attributes as A on B.root_id = A.root_id where A.name like 'custom-dailynote-${dayjs(
+      today.value
+    ).format('YYYYMMDD')}' and B.type = 'd' order by A.value desc;`
     // const allSql = `select * from blocks where box = "${dailyNotebookId.value}" and hpath like "/daily note/%${date}" and type = 'd'`
     querySql(useNewQuery.value ? daySqlNew : daySql).then((res) => {
       if (res.data.length) {
@@ -104,13 +129,25 @@ limit 100000;`
         message.error(`KNote:不存在${date}的日记，请新建`)
       }
     })
+    querySql(useNewQuery.value ? todaySqlNew : todaySql).then((res) => {
+      if (res.data.length) {
+        if (res.data.length > 1) {
+          message.info(`KNote:当前笔记本下存在多个${today.value}的日记，请检查`)
+        }
+        todayDailyDocId.value = res.data[0].id
+        // 存在
+        return res.data[0]
+      } else {
+        message.error(`KNote:不存在${today.value}的日记，请新建`)
+      }
+    })
   }
 
-  const sendToSiYuan = async (knote: KNoteModel) => {
+  const sendToSiYuan = async (knote: KNoteModel, docId: string = todayDailyDocId.value) => {
     if (!dailyNotebookId.value) {
       return message.error('KNote:请先设置思源笔记本')
     }
-    if (!selectDateDailyDocId.value) {
+    if (!docId) {
       return message.error('KNote:当天日记不存在，新建失败')
     }
     // 如果存在
@@ -118,7 +155,7 @@ limit 100000;`
     const res = await appendBlock({
       dataType: 'markdown',
       // parentID: '20231113112300-s2a6pi6',
-      parentID: selectDateDailyDocId.value,
+      parentID: docId,
       data: `>${knote.content}`
     })
 
@@ -134,7 +171,8 @@ limit 100000;`
     })
 
     // 构造一个假的hath，适配按日期分组的功能
-    knote.hpath = `/daily note/${selectedDay.value}`
+    // 这里应该要改了，因为通过新方法获取的数据，可能hpath并不准确了
+    knote.hpath = `/daily note/${docId === todayDailyDocId.value ? today.value : selectedDay.value}`
     // 优化用户体验，添加的时候直接push进数组，因为如果等待思源更新后再从思源获取，会有延迟
     allSiyuanKnotes.value = [knote, ...allSiyuanKnotes.value]
   }
@@ -191,6 +229,7 @@ limit 100000;`
     getConfig,
     saveConfig,
     displayMode,
-    useNewQuery
+    useNewQuery,
+    panelDisplayMode
   }
 }
