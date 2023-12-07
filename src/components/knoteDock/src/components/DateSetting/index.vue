@@ -128,6 +128,10 @@ const handlePre = () => {
 }
 
 const handleNext = () => {
+  // 如果是今天，不允许next
+  if (selected.value.isSame(dayjs(), 'day')) {
+    return
+  }
   selected.value = selected.value.add(1, 'day')
   dateChange(selected.value)
 }
