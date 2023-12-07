@@ -63,6 +63,7 @@ const filterPanel = () => {
 }
 
 const segmentedOptions = ref<Array<Record<string, any>>>([
+  // 插入一个全部按钮
   { value: 'all' },
   ...Object.values(colorMap).map((item) => {
     return {
@@ -70,6 +71,7 @@ const segmentedOptions = ref<Array<Record<string, any>>>([
       payload: item
     }
   }),
+  // 插入一个返回按钮
   {
     value: '<',
     payload: {

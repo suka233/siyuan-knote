@@ -21,8 +21,8 @@ import { useData } from '@/components/knoteDock/src/hooks/useData'
 import KNote from '../../components/KNote/index.vue'
 import NewKnote from '@/components/knoteDock/src/components/NewKnote/index.vue'
 import QuickInput from '@/components/knoteDock/src/components/QuickInput/index.vue'
-import { computed } from 'vue'
-const { allSiyuanKnotes, showNewKnote, showQuickInput, panelDisplayMode } = useData()
+import { computed, onMounted, ref } from 'vue'
+const { allSiyuanKnotes, showNewKnote, showQuickInput, panelDisplayMode, scrollTo } = useData()
 
 // const wrapRef = ref()
 // const newKnoteRef = ref()
@@ -89,6 +89,21 @@ const computedKnotes = computed(() => {
     })
   }
   return result
+})
+
+const scrollerRef = ref(null)
+onMounted(() => {
+  // 将scrollTo方法暴露出去，使用：scrollTo('2023-12-06')
+  scrollTo.value = (id) => {
+    const index = computedKnotes.value.findIndex((item) => {
+      return item.id === id
+    })
+    if (index === -1) {
+      return
+    }
+    // @ts-ignore
+    scrollerRef.value.scrollToItem(index)
+  }
 })
 </script>
 

@@ -1,6 +1,9 @@
 <template>
   <a-row>
-    <a-col :span="4" style="text-align: right"><span class="向前" @click="handlePre">&lt;</span></a-col>
+    <a-col :span="4" style="text-align: right">
+      <!--      <span class="向前" @click="handlePre" :disabled="displayMode === 'all'">&lt;</span>-->
+      <a-button @click="handlePre" type="text">&lt;</a-button>
+    </a-col>
     <a-col :span="16"
       ><a-date-picker
         v-model:value="selected"
@@ -67,20 +70,30 @@
         </template>
       </a-date-picker>
     </a-col>
-    <a-col :span="4"><span class="向后" @click="handleNext">&gt;</span></a-col>
+    <a-col :span="4">
+      <!--      <span class="向后" @click="handleNext">&gt;</span>-->
+      <a-button @click="handleNext" type="text">&gt;</a-button>
+    </a-col>
   </a-row>
 </template>
 <script setup lang="ts">
 import locale from 'ant-design-vue/es/date-picker/locale/zh_CN'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import dayjs from 'dayjs'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
 import { listNotebook } from '@/api/public'
 import { SettingOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons-vue'
 const selected = ref(dayjs())
-const { refreshSiyuanKnotes, selectedDay, getTargetDailyDocId, displayMode, dailyNotebookId, useNewQuery } = useData()
+const { refreshSiyuanKnotes, selectedDay, getTargetDailyDocId, displayMode, dailyNotebookId, useNewQuery, scrollTo } =
+  useData()
 const dateChange = (value) => {
-  console.log(value)
+  // console.log(value)
+
+  if (displayMode.value === 'all') {
+    // 跳转到指定日期
+    scrollTo.value(dayjs(value).format('YYYY-MM-DD'))
+    return
+  }
   selectedDay.value = dayjs(value).format('YYYY-MM-DD')
   refreshSiyuanKnotes()
   getTargetDailyDocId(selectedDay.value)
@@ -118,6 +131,19 @@ const handleNext = () => {
   selected.value = selected.value.add(1, 'day')
   dateChange(selected.value)
 }
+
+// 当displayMode变为all的时候，selected.value变为今天，覆写前进，后退，切换日期的行为
+watch(
+  () => displayMode.value,
+  (newVal) => {
+    if (newVal === 'all') {
+      selected.value = dayjs()
+    } else {
+      // 当从all变为day的时候，更新当前选择器的时间为缓存的selectedDay
+      selected.value = dayjs(selectedDay.value)
+    }
+  }
+)
 </script>
 <style scoped lang="less">
 .向前 {

@@ -61,6 +61,9 @@ const panelDisplayMode = ref<
   | 'pen'
 >('all')
 
+// 滚动到指定位置的方法
+const scrollTo = ref<(...args: any[]) => void>()
+
 export const useData = () => {
   const refreshSiyuanKnotes = async () => {
     // 查出所有的callout
@@ -237,6 +240,7 @@ limit 100000;`
     saveConfig,
     displayMode,
     useNewQuery,
-    panelDisplayMode
+    panelDisplayMode,
+    scrollTo
   }
 }
