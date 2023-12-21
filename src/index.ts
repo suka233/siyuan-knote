@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import DialogApp from '@/components/kmindDialog/index.vue'
-import siyuan, { Plugin, getFrontend, openTab, Dialog } from 'siyuan'
+import siyuan, { Plugin, getFrontend, openTab, Dialog, Menu } from 'siyuan'
 import type { IModel, ITab } from 'siyuan'
 // import './index.sass'
 import 'uno.css'
@@ -13,7 +13,7 @@ import './assets/index.less'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
 export default class KvideoPlugin extends Plugin {
   private isMobile!: boolean
-  // public menuElement!: HTMLElement
+  public menuElement!: HTMLElement
   public dialogElement!: HTMLElement
   private static readonly GLOBAL: Record<string, any> = globalThis
   private static readonly PROPERTY_NAME: string = 'kvideoApi'
@@ -47,7 +47,7 @@ export default class KvideoPlugin extends Plugin {
     // 初始化顶栏菜单按钮
     // this.menuElement = this.addTopBar({
     //   icon: 'iconKnote',
-    //   title: this.i18n.openKvideo,
+    //   title: this.i18n.openKNote,
     //   position: 'right',
     //   callback: () => {
     //     let rect = this.menuElement.getBoundingClientRect()
@@ -79,10 +79,22 @@ export default class KvideoPlugin extends Plugin {
         refreshSiyuanKnotes()
       }
     })
+
+    // const { BrowserWindow, globalShortcut, app } = require('@electron/remote')
+    // console.log(app)
+    // const quickInputWin = new BrowserWindow({
+    //   width: 800,
+    //   height: 600,
+    //   show: false
+    // })
+    // quickInputWin.loadURL('https://github.com')
+    // console.log(globalShortcut)
+
     this.addCommand({
       langKey: 'openQuickInput',
       hotkey: '⇧⌘Q',
-      callback: () => {
+      globalCallback: () => {
+        // quickInputWin.show()
         showQuickInput.value = true
       }
     })
@@ -94,36 +106,36 @@ export default class KvideoPlugin extends Plugin {
   }
 
   // 创建菜单
-  // private addMenu(rect: DOMRect) {
-  //   const menu = new Menu('Kvideo')
-  //
-  //   menu.addItem({
-  //     icon: 'iconInfo',
-  //     label: 'KNote全局配置',
-  //     click: () => {
-  //       // this.openConfigDialog('Kmind全局配置', 'GlobalConfig')
-  //       console.log('Kvideo全局配置')
-  //       mitt.emit('suka', 'suka mitt')
-  //     }
-  //   })
-  //
-  //   // menu.addItem({
-  //   //   icon: 'iconInfo',
-  //   //   label: 'Kmind文件夹',
-  //   //   click: () => {
-  //   //     this.openConfigDialog('Kmind文件夹', 'KmindDock')
-  //   //   }
-  //   // })
-  //
-  //   if (this.isMobile) {
-  //     menu.fullscreen()
-  //   } else {
-  //     menu.open({
-  //       x: rect.left,
-  //       y: rect.bottom
-  //     })
-  //   }
-  // }
+  private addMenu(rect: DOMRect) {
+    const menu = new Menu('Kvideo')
+
+    menu.addItem({
+      icon: 'iconInfo',
+      label: 'KNote全局配置',
+      click: () => {
+        // this.openConfigDialog('Kmind全局配置', 'GlobalConfig')
+        console.log('Kvideo全局配置')
+        mitt.emit('suka', 'suka mitt')
+      }
+    })
+
+    // menu.addItem({
+    //   icon: 'iconInfo',
+    //   label: 'Kmind文件夹',
+    //   click: () => {
+    //     this.openConfigDialog('Kmind文件夹', 'KmindDock')
+    //   }
+    // })
+
+    if (this.isMobile) {
+      menu.fullscreen()
+    } else {
+      menu.open({
+        x: rect.left,
+        y: rect.bottom
+      })
+    }
+  }
 
   // 打开tab页
   open(name, videoId?: string, videoUrl?: string) {

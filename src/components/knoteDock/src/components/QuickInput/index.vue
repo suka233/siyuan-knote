@@ -47,7 +47,7 @@ import { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
 
 import { QuestionCircleOutlined } from '@ant-design/icons-vue'
 import type { TourProps } from 'ant-design-vue'
-const { sendToSiYuan, allSiyuanKnotes } = useData()
+const { sendToSiYuan } = useData()
 const props = defineProps<{
   visible: boolean
 }>()
@@ -224,10 +224,19 @@ watch(
 )
 </script>
 
-<style scoped lang="less">
-.包裹 {
-  //:deep(input) {
-  //  background-color: v-bind('colorMap?.[label]?.secondaryColor ?? `red`');
-  //}
+<style lang="less">
+html[data-theme-mode='dark'] {
+  .ant-modal .ant-modal-content {
+    background-color: #1e1e1e !important;
+  }
+
+  .ant-modal .ant-modal-header {
+    background-color: #1e1e1e !important;
+  }
+
+  .v-text-field .v-field--no-label input,
+  .v-text-field .v-field--active input {
+    opacity: 0.3;
+  }
 }
 </style>

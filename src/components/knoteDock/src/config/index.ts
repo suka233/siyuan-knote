@@ -25,84 +25,94 @@ interface IColorMap {
 export const colorMap: IColorMap = {
   default: {
     mainColor: '#c5c5c5',
-    secondaryColor: '#ececec',
+    secondaryColor: '#ececec0a',
     desc: '默认',
     descEn: 'default',
     icon: SmileOutlined
   },
   info: {
     mainColor: '#3889c4',
-    secondaryColor: '#eef5f8',
+    secondaryColor: '#3889c40a',
+    // secondaryColor: '#eef5f880',
     desc: '信息',
     descEn: 'info',
     icon: InfoCircleOutlined
   },
   light: {
     mainColor: '#ffce52',
-    secondaryColor: '#fcf5ee',
+    secondaryColor: '#ffce520a',
     desc: '灵感',
     descEn: 'light',
     icon: BulbOutlined
   },
   bell: {
     mainColor: '#ffae30',
-    secondaryColor: '#faf0e6',
+    // secondaryColor: '#faf0e64D',
+    secondaryColor: '#ffae300a',
     desc: '提醒',
     descEn: 'bell',
     icon: BellOutlined
   },
   check: {
     mainColor: '#79b453',
-    secondaryColor: '#eef6f0',
+    // secondaryColor: '#eef6f080',
+    secondaryColor: '#79b4530a',
     desc: '正确',
     descEn: 'check',
     icon: CheckCircleOutlined
   },
   wrong: {
     mainColor: '#de2a42',
-    secondaryColor: '#fdf1f1',
+    // secondaryColor: '#fdf1f180',
+    secondaryColor: '#de2a420a',
     desc: '错误',
     descEn: 'wrong',
     icon: CloseOutlined
   },
   warn: {
     mainColor: '#ffcd4c',
-    secondaryColor: '#fdf9ed',
+    // secondaryColor: '#fdf9ed80',
+    secondaryColor: '#ffcd4c0a',
     desc: '警告',
     descEn: 'warn',
     icon: WarningOutlined
   },
   question: {
     mainColor: '#bf122d',
-    secondaryColor: '#f9eff5',
+    // secondaryColor: '#f9eff580',
+    secondaryColor: '#bf122d0a',
     desc: '问题',
     descEn: 'question',
     icon: QuestionCircleOutlined
   },
   error: {
     mainColor: '#de2a42',
-    secondaryColor: '#fdf1f1',
+    // secondaryColor: '#fdf1f180',
+    secondaryColor: '#de2a420a',
     desc: '禁止',
     descEn: 'error',
     icon: StopOutlined
   },
   bug: {
     mainColor: '#9366cd',
-    secondaryColor: '#f4f1f8',
+    // secondaryColor: '#f4f1f880',
+    secondaryColor: '#9366cd0a',
     desc: 'bug',
     descEn: 'bug',
     icon: BugOutlined
   },
   note: {
     mainColor: '#6c7c85',
-    secondaryColor: '#e2e5e7',
+    // secondaryColor: '#e2e5e780',
+    secondaryColor: '#6c7c850a',
     desc: '注记',
     descEn: 'note',
     icon: BookOutlined
   },
   pen: {
     mainColor: '#293137',
-    secondaryColor: '#f5f5f6',
+    // secondaryColor: '#f5f5f680',
+    secondaryColor: '#2931370a',
     desc: '记录',
     descEn: 'pen',
     icon: EditOutlined

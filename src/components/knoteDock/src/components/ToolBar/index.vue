@@ -111,7 +111,7 @@ const handleSwitchPanel = (item) => {
     text-align: center;
 
     &:hover {
-      background-color: #dfe0e1;
+      background-color: #5c5c5c0a;
     }
   }
 }
