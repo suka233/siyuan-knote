@@ -2,7 +2,7 @@
   "name": "knote-plugin",
   "author": "suka233",
   "url": "https://github.com/suka233/siyuan-knote",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "minAppVersion": "2.8.10",
   "backends": ["all"],
   "frontends": ["all"],
@@ -11,8 +11,8 @@
     "en_US": "KNote plugin"
   },
   "description": {
-    "zh_CN": "将daily note无压笔记法和思源结合起来，想到什么就写什么，无压力做笔记。实验功能：当前支持任意格式的日记存储路径解析",
-    "en_US": "Quickly view your daily note"
+    "zh_CN": "将daily note无压笔记法和思源结合起来，想到什么就写什么，无压力做笔记。实验功能：当前支持任意格式的日记存储路径解析，新增支持黑暗模式",
+    "en_US": "Combine daily note and siyuan, write down what you think, and take notes without pressure. Experimental function: the current support for any format of diary storage path analysis, new support for dark mode"
   },
   "readme": {
     "zh_CN": "README.md"
