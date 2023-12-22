@@ -126,7 +126,7 @@ limit 100000;`
       'YYYYMMDD'
     )}' and B.type = 'd' order by A.value desc;`
     // const allSql = `select * from blocks where box = "${dailyNotebookId.value}" and hpath like "/daily note/%${date}" and type = 'd'`
-    querySql(useNewQuery.value ? daySqlNew : daySql).then((res) => {
+    await querySql(useNewQuery.value ? daySqlNew : daySql).then((res) => {
       if (res.data.length) {
         if (res.data.length > 1) {
           message.info(`KNote:当前笔记本下存在多个${date}的日记，请检查`)
@@ -138,7 +138,8 @@ limit 100000;`
         message.error(`KNote:不存在${date}的日记，请新建`)
       }
     })
-    querySql(useNewQuery.value ? todaySqlNew : todaySql).then((res) => {
+    return await querySql(useNewQuery.value ? todaySqlNew : todaySql).then((res) => {
+      console.log(res)
       if (res.data.length) {
         if (res.data.length > 1) {
           message.info(`KNote:当前笔记本下存在多个${today.value}的日记，请检查`)
@@ -147,7 +148,7 @@ limit 100000;`
         // 存在
         return res.data[0]
       } else {
-        message.error(`KNote:不存在${today.value}的日记，请新建`)
+        return message.error(`KNote:不存在${today.value}的日记，请新建`)
       }
     })
   }
@@ -241,6 +242,7 @@ limit 100000;`
     displayMode,
     useNewQuery,
     panelDisplayMode,
-    scrollTo
+    scrollTo,
+    todayDailyDocId
   }
 }
