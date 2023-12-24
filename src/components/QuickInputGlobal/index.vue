@@ -1,19 +1,13 @@
 <template>
   <div>
+    <a-row>
+      <a-col :span="24" class="标题栏">
+        <a-col class="tags" :span="20" />
+        <a-col class="操作按钮" :span="4" />
+      </a-col>
+    </a-row>
     <div>
-      <!--      <a-tooltip v-for="item in colorMap" :key="item.desc" :title="item.desc" :color="item.mainColor">-->
-      <!--        <a-tag-->
-      <!--          :color="`${label === item.descEn ? item.mainColor : item.secondaryColor}`"-->
-      <!--          :style="{ cursor: 'pointer' }"-->
-      <!--          @click="handleChangeType(item.descEn)"-->
-      <!--        >-->
-      <!--          <template #icon>-->
-      <!--            <component :is="item.icon" :style="{ color: label === item.descEn ? 'white' : item.mainColor }" />-->
-      <!--          </template>-->
-      <!--          <span :style="{ color: label === item.descEn ? 'white' : 'gray' }">{{ item.descEn }}</span>-->
-      <!--        </a-tag>-->
-      <!--      </a-tooltip>-->
-      <a-button @click="renderKnote">整一个</a-button>
+      <a-button @click="renderProtyle">整一个</a-button>
     </div>
     <div class="w-full h-full" ref="protyle"></div>
   </div>
@@ -30,9 +24,10 @@ import { appendBlock } from '@/api/public'
 const plugin = inject('plugin')
 const protyle = ref(null)
 
-const { getConfig, getTargetDailyDocId, todayDailyDocId } = useData()
+const { getConfig, getTargetDailyDocId } = useData()
 
-const renderKnote = async () => {
+// 渲染思源的protyle
+const renderProtyle = async () => {
   // 先获取当日笔记id
   await getConfig()
   const data = await getTargetDailyDocId(dayjs().format('YYYY-MM-DD'))
@@ -53,14 +48,15 @@ const renderKnote = async () => {
   targetId = match[1].split('"')[1]
   // 根据目标id渲染protyle
   new Protyle(plugin.app, protyle.value, {
-    blockId: targetId
+    blockId: targetId,
+    typewriterMode: true
   })
 }
 onMounted(() => {
   window.addEventListener('storage', (e) => {
     if (e.key === 'knote-quick-input-visible') {
       if (e.newValue === 'true') {
-        renderKnote()
+        renderProtyle()
       }
     }
   })

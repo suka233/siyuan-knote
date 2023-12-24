@@ -8,6 +8,10 @@ import { useData } from '@/components/knoteDock/src/hooks/useData'
 import { createApp } from 'vue'
 import QuickInputGlobal from './components/QuickInputGlobal/index.vue'
 import Antd from 'ant-design-vue'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
 export default class KnotePlugin extends Plugin {
   // private isMobile!: boolean
   // public menuElement!: HTMLElement
@@ -67,9 +71,19 @@ export default class KnotePlugin extends Plugin {
       }
     })
 
+    this.addCommand({
+      langKey: 'openQuickInput',
+      hotkey: '⇧⌘Q',
+      globalCallback: () => {
+        showQuickInput.value = true
+      }
+    })
+
+    return
+
     // 非knote启动的窗口的情况下，加载快速输入窗口
     if (!window.location.search.includes('knote-quick-input=true')) {
-      const { BrowserWindow, globalShortcut, app } = require('@electron/remote')
+      const { BrowserWindow } = require('@electron/remote')
       const remote = require('@electron/remote/main')
       console.log(remote)
       // console.log(app)
@@ -90,11 +104,12 @@ export default class KnotePlugin extends Plugin {
         }
       })
       localStorage.setItem('knote-quick-input-visible', 'false')
+      quickInputWin.webContents.openDevTools()
       // 失焦隐藏
-      quickInputWin.webContents.on('blur', () => {
-        quickInputWin.hide()
-        localStorage.setItem('knote-quick-input-visible', 'false')
-      })
+      // quickInputWin.webContents.on('blur', () => {
+      //   quickInputWin.hide()
+      //   localStorage.setItem('knote-quick-input-visible', 'false')
+      // })
 
       quickInputWin.webContents.on('show', () => {
         localStorage.setItem('knote-quick-input-visible', 'true')
@@ -105,8 +120,6 @@ export default class KnotePlugin extends Plugin {
       })
 
       // 监听快速输入窗口的显示事件
-
-      console.log(quickInputWin.webContents)
       remote.enable(quickInputWin.webContents)
       quickInputWin.loadURL(
         // 不加上window.html后缀会导致额外的托盘被创建
@@ -136,9 +149,20 @@ export default class KnotePlugin extends Plugin {
       // 必须要设成这么多 不然覆盖不了思源的全局按钮
       // quickInput.style.zIndex = '1000000'
       document.body.appendChild(quickInput)
+      const vuetify = createVuetify({
+        components,
+        directives,
+        icons: {
+          defaultSet: 'mdi',
+          aliases,
+          sets: {
+            mdi
+          }
+        }
+      })
       // 把plugin传入方便使用，注意这里的作用域是第二个插件的加载的作用域了，要和主窗口的knote通讯，可以通过localStorage
       const app = createApp(QuickInputGlobal).provide('plugin', this)
-      app.use(Antd).mount(quickInput)
+      app.use(vuetify).use(Antd).mount(quickInput)
     }
   }
 
