@@ -71,15 +71,15 @@ export default class KnotePlugin extends Plugin {
       }
     })
 
-    this.addCommand({
-      langKey: 'openQuickInput',
-      hotkey: '⇧⌘Q',
-      globalCallback: () => {
-        showQuickInput.value = true
-      }
-    })
-
-    return
+    // this.addCommand({
+    //   langKey: 'openQuickInput',
+    //   hotkey: '⇧⌘Q',
+    //   globalCallback: () => {
+    //     showQuickInput.value = true
+    //   }
+    // })
+    //
+    // return
 
     // 非knote启动的窗口的情况下，加载快速输入窗口
     if (!window.location.search.includes('knote-quick-input=true')) {
@@ -88,11 +88,11 @@ export default class KnotePlugin extends Plugin {
       console.log(remote)
       // console.log(app)
       const quickInputWin = new BrowserWindow({
-        width: 700,
+        width: 800,
         height: 400,
-        show: false,
+        show: true,
         transparent: true,
-        frame: false,
+        // frame: false,
         alwaysOnTop: true,
         skipTaskbar: true,
         webPreferences: {

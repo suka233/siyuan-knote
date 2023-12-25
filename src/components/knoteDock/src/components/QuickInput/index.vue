@@ -17,7 +17,7 @@
         </a-tooltip>
       </div>
     </template>
-    <div class="包裹" :style="computedStyle" ref="inputArea" v-show="editMode === 'simple'">
+    <div class="包裹 relative" :style="computedStyle" ref="inputArea" v-show="editMode === 'simple'">
       <v-text-field
         @update:model-value="handleChange"
         v-model="knote.content"
@@ -33,10 +33,15 @@
         hide-details
         :base-color="colorMap[knote.type].mainColor"
       />
+      <a-tooltip title="shift+enter或者点我即可展开为思源编辑器" v-if="editMode === 'simple'">
+        <expand-alt-outlined
+          class="cursor-pointer text-center absolute right-1rem bottom-1rem"
+          @click="handleChangeMode"
+        />
+      </a-tooltip>
     </div>
     <question-circle-outlined @click="openTour = true" class="cursor-pointer" />
     <a-tour v-model:current="current" :open="openTour" :steps="steps" @close="openTour = false" />
-    <div class="cursor-pointer" @click="handleChangeMode" v-if="editMode === 'simple'">👇</div>
     <div>
       <div
         :style="computedStyle"
@@ -57,7 +62,7 @@ import { colorMap, quickCommandMap } from '@/components/knoteDock/src/config'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
 import { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
 
-import { QuestionCircleOutlined } from '@ant-design/icons-vue'
+import { QuestionCircleOutlined, ExpandAltOutlined } from '@ant-design/icons-vue'
 import type { TourProps } from 'ant-design-vue'
 import dayjs from 'dayjs'
 import { appendBlock, setBlockAttrs } from '@/api/public'
@@ -317,21 +322,9 @@ const renderProtyle = async () => {
       })
     }
   })
-  console.log(protyle.value)
-  // 选中#knote-protyle 下 data-node-id=targetId 的第一个div元素
-  // setTimeout(() => {
-  //   const clickEvent = new MouseEvent('click', {
-  //     view: window,
-  //     bubbles: true,
-  //     cancelable: true
-  //   })
-  //   const target = protyle.value!.querySelector(`div[data-node-id="${targetId}"]`) as HTMLElement
-  //   console.log(target)
-  //   target.dispatchEvent(clickEvent)
-  //   target.focus()
-  // })
 }
 
+// 编辑器转换为思源原生编辑器
 const handleChangeMode = () => {
   editMode.value = 'protyle'
   renderProtyle()
