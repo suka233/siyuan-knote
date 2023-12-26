@@ -88,7 +88,7 @@ export default class KnotePlugin extends Plugin {
       console.log(remote)
       // console.log(app)
       const quickInputWin = new BrowserWindow({
-        width: 800,
+        width: 1000,
         height: 400,
         show: true,
         transparent: true,
