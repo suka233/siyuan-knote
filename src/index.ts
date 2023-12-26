@@ -89,10 +89,10 @@ export default class KnotePlugin extends Plugin {
       // console.log(app)
       const quickInputWin = new BrowserWindow({
         width: 1000,
-        height: 400,
-        show: true,
+        height: 128,
+        show: false,
         transparent: true,
-        // frame: false,
+        frame: false,
         alwaysOnTop: true,
         skipTaskbar: true,
         webPreferences: {
@@ -104,12 +104,16 @@ export default class KnotePlugin extends Plugin {
         }
       })
       localStorage.setItem('knote-quick-input-visible', 'false')
-      quickInputWin.webContents.openDevTools()
+      localStorage.setItem('knote-quick-input-close', 'false')
+      // quickInputWin.webContents.openDevTools()
       // 失焦隐藏
-      // quickInputWin.webContents.on('blur', () => {
-      //   quickInputWin.hide()
-      //   localStorage.setItem('knote-quick-input-visible', 'false')
-      // })
+      quickInputWin.webContents.on('blur', () => {
+        if (localStorage.getItem('knote-quick-input-pin') === 'true') {
+          return
+        }
+        quickInputWin.hide()
+        localStorage.setItem('knote-quick-input-visible', 'false')
+      })
 
       quickInputWin.webContents.on('show', () => {
         localStorage.setItem('knote-quick-input-visible', 'true')
@@ -137,15 +141,43 @@ export default class KnotePlugin extends Plugin {
           // showQuickInput.value = true
         }
       })
+
+      addEventListener('storage', (e) => {
+        if (e.key === 'knote-quick-input-close') {
+          if (e.newValue === 'true') {
+            quickInputWin.close()
+            localStorage.setItem('knote-quick-input-close', 'false')
+          }
+        }
+
+        if (e.key === 'knote-quick-input-visible') {
+          if (e.newValue === 'true') {
+            quickInputWin.show()
+          } else {
+            quickInputWin.hide()
+          }
+        }
+
+        // knote-quick-input-edit-mode 为simple时候，窗口高度设置为120，为protyle的时候，窗口高度设置为400
+        if (e.key === 'knote-quick-input-edit-mode') {
+          if (e.newValue === 'simple') {
+            quickInputWin.setSize(1000, 128)
+          } else {
+            quickInputWin.setSize(1000, 400)
+          }
+        }
+
+        // knote-quick-input-pin
+      })
     } else {
       // 将quickInput的dom插入到body中
       console.log('quickInput窗口')
       const quickInput = document.createElement('div')
-      quickInput.id = 'quickInput'
+      quickInput.id = 'KnoteQuickInputGlobal'
       quickInput.style.width = '100vw'
       quickInput.style.height = '100vh'
       quickInput.style.position = 'fixed'
-      quickInput.style.backgroundColor = 'white'
+      // quickInput.style.backgroundColor = 'white'
       // 必须要设成这么多 不然覆盖不了思源的全局按钮
       // quickInput.style.zIndex = '1000000'
       document.body.appendChild(quickInput)
