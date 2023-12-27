@@ -22,7 +22,7 @@
             </a-tooltip>
           </a-col>
           <a-col class="操作按钮" :span="2">
-            <div class="flex justify-between">
+            <div class="flex justify-around">
               <a-tooltip title="固定窗口">
                 <pushpin-outlined
                   class="cursor-pointer text-center"
@@ -87,9 +87,10 @@ import { ExpandAltOutlined, PushpinOutlined, CloseOutlined } from '@ant-design/i
 const plugin = inject('plugin') as Plugin
 /** TODO 移植quickInput到QuickInputGlobal中
  * 需要注意的点：
- * 唤出QI的时候，检测一下dock栏是否加载，涉及到send方法的使用
- * 编辑区切换为protyle模式的时候，自动pin住此悬浮窗口，失焦不隐藏，esc或者ctrl+enter后取消pin状态并隐藏
- * 通过监听localStorage的变化来初始化数据
+ * √ 唤出QI的时候，检测一下dock栏是否加载，涉及到send方法的使用
+ * √ 编辑区切换为protyle模式的时候，自动pin住此悬浮窗口，失焦不隐藏，esc后取消pin状态并隐藏
+ * √ 通过监听localStorage的变化来初始化数据
+ * 做一下用户指引
  */
 // region 初始化
 // 初始化为不同的状态
@@ -309,6 +310,9 @@ const handleKeyup = (e: KeyboardEvent) => {
   // 如果按下了shift+enter键，就切换到protyle模式
   if (e.key === 'Enter' && e.shiftKey) {
     editMode.value = 'protyle'
+    // 自动pin住
+    isPin.value = true
+    localStorage.setItem('knote-quick-input-pin', 'true')
     renderProtyle()
   }
 }
