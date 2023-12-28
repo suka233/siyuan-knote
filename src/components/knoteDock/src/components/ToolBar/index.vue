@@ -8,7 +8,16 @@
         </div>
       </a-col>
       <a-col :span="8">
-        <div class="操作按钮" @click="newKnote" title="默认会在今天插入一条KNote">新建</div>
+        <a-popconfirm
+          v-if="!todayDailyDocId"
+          title="检测到今日日记还没有创建，是否创建？"
+          cancel-text="不创建"
+          ok-text="创建"
+          @confirm="handleAddConfirm"
+        >
+          <div class="操作按钮" title="默认会在今天插入一条KNote">新建</div>
+        </a-popconfirm>
+        <div class="操作按钮" @click="newKnote" title="默认会在今天插入一条KNote" v-else>新建</div>
         <div class="操作按钮" @click="refresh">刷新</div>
         <div class="操作按钮" @click="filterPanel">筛选</div>
         <!--        <setting-pop />-->
@@ -45,7 +54,7 @@ import { ref } from 'vue'
 import { colorMap } from '@/components/knoteDock/src/config'
 import { LeftCircleFilled } from '@ant-design/icons-vue'
 
-const { refreshSiyuanKnotes, showNewKnote, panelDisplayMode } = useData()
+const { refreshSiyuanKnotes, showNewKnote, panelDisplayMode, todayDailyDocId, createTodayDailyNote } = useData()
 
 const newKnote = () => {
   showNewKnote.value = true
@@ -85,6 +94,13 @@ const handleSwitchPanel = (item) => {
     return filterPanel()
   }
   panelDisplayMode.value = item.value
+}
+
+const handleAddConfirm = async () => {
+  // 先新建今日日记
+  await createTodayDailyNote()
+  // 再显示KNote输入框
+  newKnote()
 }
 </script>
 

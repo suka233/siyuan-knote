@@ -1,9 +1,19 @@
 // 是否展示抽屉设置栏
 import { ref } from 'vue'
-import { appendBlock, listFile, querySql, setBlockAttrs, putFile, putKnoteConfigFile, getFile } from '@/api/public'
+import {
+  appendBlock,
+  listFile,
+  querySql,
+  setBlockAttrs,
+  putFile,
+  putKnoteConfigFile,
+  getFile,
+  createDailyNote
+} from '@/api/public'
 import dayjs from 'dayjs'
 import type { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
-import { message } from 'ant-design-vue'
+import { message, Button, notification } from 'ant-design-vue'
+import { SmileOutlined } from '@ant-design/icons-vue'
 
 const showDrawer = ref(false)
 // 发送到思源笔记的方式: 插入到当天的dailyNote中，或者是插入到指定的笔记中
@@ -86,7 +96,7 @@ and B.type = 'b'
 order by A.value desc, B.updated desc
 limit 100000;`
 
-    querySql(
+    return querySql(
       displayMode.value === 'day' ? (useNewQuery.value ? daySqlNew : daySql) : useNewQuery.value ? allSqlNew : allSql
     ).then((res) => {
       // 匹配custom-b=""的字符串
@@ -118,14 +128,8 @@ limit 100000;`
     const daySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
       dailyNotebookId.value
     }' and A.name like 'custom-dailynote-${dayjs(date).format('YYYYMMDD')}' and B.type = 'd' order by A.value desc;`
-
-    const todaySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${today.value}' and type = 'd'`
-    const todaySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
-      dailyNotebookId.value
-    }' and A.name like 'custom-dailynote-${dayjs(today.value).format(
-      'YYYYMMDD'
-    )}' and B.type = 'd' order by A.value desc;`
     // const allSql = `select * from blocks where box = "${dailyNotebookId.value}" and hpath like "/daily note/%${date}" and type = 'd'`
+    // 获取指定日期的日记文档id
     await querySql(useNewQuery.value ? daySqlNew : daySql).then((res) => {
       if (res.data.length) {
         if (res.data.length > 1) {
@@ -135,11 +139,18 @@ limit 100000;`
         // 存在
         return res.data[0]
       } else {
-        message.error(`KNote:不存在${date}的日记，请新建`)
+        return message.error(`KNote:不存在${date}的日记，请新建`)
       }
     })
+
+    const todaySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${today.value}' and type = 'd'`
+    const todaySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
+      dailyNotebookId.value
+    }' and A.name like 'custom-dailynote-${dayjs(today.value).format(
+      'YYYYMMDD'
+    )}' and B.type = 'd' order by A.value desc;`
+    // 获取当天的日记文档id
     return await querySql(useNewQuery.value ? todaySqlNew : todaySql).then((res) => {
-      console.log(res)
       if (res.data.length) {
         if (res.data.length > 1) {
           message.info(`KNote:当前笔记本下存在多个${today.value}的日记，请检查`)
@@ -148,7 +159,57 @@ limit 100000;`
         // 存在
         return res.data[0]
       } else {
-        return message.error(`KNote:不存在${today.value}的日记，请新建`)
+        return message.error({
+          content: () => {
+            const handleClick = () => {
+              createTodayDailyNote()
+            }
+            return (
+              <span>
+                {`KNote:不存在${today.value}的日记，请手动新建或者`}
+                <Button type={`link`} onClick={handleClick}>
+                  点我一键新建
+                </Button>
+              </span>
+            )
+          }
+        })
+      }
+    })
+  }
+
+  const getTodayDailyDocId = async () => {
+    const todaySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${today.value}' and type = 'd'`
+    const todaySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
+      dailyNotebookId.value
+    }' and A.name like 'custom-dailynote-${dayjs(today.value).format(
+      'YYYYMMDD'
+    )}' and B.type = 'd' order by A.value desc;`
+    // 获取当天的日记文档id
+    return await querySql(useNewQuery.value ? todaySqlNew : todaySql).then((res) => {
+      if (res.data.length) {
+        if (res.data.length > 1) {
+          message.info(`KNote:当前笔记本下存在多个${today.value}的日记，请检查`)
+        }
+        todayDailyDocId.value = res.data[0].id
+        // 存在
+        return res.data[0]
+      } else {
+        return message.error({
+          content: () => {
+            const handleClick = () => {
+              createTodayDailyNote()
+            }
+            return (
+              <span>
+                {`KNote:不存在${today.value}的日记，请手动新建或者`}
+                <Button type={`link`} onClick={handleClick}>
+                  点我一键新建
+                </Button>
+              </span>
+            )
+          }
+        })
       }
     })
   }
@@ -223,6 +284,65 @@ limit 100000;`
       useNewQuery: useNewQuery.value
     })
   }
+
+  // 创建今日笔记
+  const createTodayDailyNote = async () => {
+    createDailyNote(dailyNotebookId.value).then((res) => {
+      // 赋值todayDailyDocId
+      console.log(res)
+      todayDailyDocId.value = res.data.id
+      message.success('KNote:今日日记创建成功')
+    })
+  }
+
+  // 跨天自动提醒并清空todayDailyDocId,递归调用自己
+  const newDayNotify = async () => {
+    const now = dayjs()
+    const tomorrow = now.add(1, 'day').startOf('day')
+    const ms = tomorrow.diff(now)
+    console.log(`knote:${ms}毫秒后刷新`)
+    setTimeout(async () => {
+      // 查出todayDailyDocId下有多少条callout数据
+      // 查出所有的callout
+      const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${today.value}' and type = 'b' limit 100000`
+      const daySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A
+on B.root_id = A.root_id
+where B.box = '${dailyNotebookId.value}'
+and A.name like 'custom-dailynote-${dayjs(today.value).format('YYYYMMDD')}'
+and B.type = 'b'
+order by B.updated desc
+limit 100000;`
+      const res = await querySql(useNewQuery.value ? daySqlNew : daySql)
+      // 计数，有多少条callout
+      const count = res.data.length
+      // 清空todayDailyDocId
+      todayDailyDocId.value = ''
+      // today加一天
+      today.value = dayjs(today.value).add(1, 'day').format('YYYY-MM-DD')
+      // 弹出notify
+      const notifyKey = `open${Date.now()}`
+      notification.open({
+        key: notifyKey,
+        message: '🎉New Day~',
+        description: `昨天您增加了${count}条Callout，记得整理哦`,
+        icon: <SmileOutlined style={{ color: '#1677ff' }} />,
+        duration: null,
+        btn: () => {
+          const handleAdd = () => {
+            createTodayDailyNote()
+            notification.close(notifyKey)
+          }
+          return (
+            <Button type={`primary`} size={`small`} onClick={handleAdd}>
+              点我新建今天的日记文档
+            </Button>
+          )
+        }
+      })
+      // 递归调用
+      newDayNotify()
+    }, ms)
+  }
   return {
     showDrawer,
     sendToSiYuanMode,
@@ -243,6 +363,9 @@ limit 100000;`
     useNewQuery,
     panelDisplayMode,
     scrollTo,
-    todayDailyDocId
+    todayDailyDocId,
+    createTodayDailyNote,
+    getTodayDailyDocId,
+    newDayNotify
   }
 }

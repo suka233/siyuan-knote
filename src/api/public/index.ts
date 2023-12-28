@@ -10,7 +10,8 @@ enum Api {
   renameFile = '/api/file/renameFile',
   appendBlock = '/api/block/appendBlock',
   SetBlockAttrs = '/api/attr/setBlockAttrs',
-  ListNotebook = '/api/notebook/lsNotebooks'
+  ListNotebook = '/api/notebook/lsNotebooks',
+  '创建日记' = '/api/filetree/createDailyNote'
 }
 
 /**
@@ -186,4 +187,11 @@ export const setBlockAttrs = (params: ISetBlockAttrsParam) => {
  */
 export const listNotebook = () => {
   return 向思源请求数据(Api.ListNotebook, {})
+}
+
+/**
+ * 创建日记
+ */
+export const createDailyNote = (notebook) => {
+  return 向思源请求数据(Api['创建日记'], { notebook })
 }

@@ -18,7 +18,8 @@ const {
   getTargetDailyDocId,
   selectedDay,
   useNewQuery,
-  refreshSiyuanKnotes
+  refreshSiyuanKnotes,
+  newDayNotify
 } = useData()
 getConfig().then(() => {
   // console.log(res)
@@ -26,6 +27,9 @@ getConfig().then(() => {
   setTimeout(() => {
     refreshSiyuanKnotes()
   })
+
+  // 每天刷新一次
+  newDayNotify()
 })
 
 // 自动保存

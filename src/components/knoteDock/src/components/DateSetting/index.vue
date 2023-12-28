@@ -66,6 +66,9 @@
                 </template>
                 <a-switch v-model:checked="useNewQuery" @change="refreshSiyuanKnotes" />
               </a-form-item>
+              <div class="p-2 text-center">
+                <a-button @click="createTodayDailyNote">点我创建今天的日记</a-button>
+              </div>
             </a-form>
           </div>
         </template>
@@ -85,8 +88,16 @@ import { useData } from '@/components/knoteDock/src/hooks/useData'
 import { listNotebook } from '@/api/public'
 import { SettingOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons-vue'
 const selected = ref(dayjs())
-const { refreshSiyuanKnotes, selectedDay, getTargetDailyDocId, displayMode, dailyNotebookId, useNewQuery, scrollTo } =
-  useData()
+const {
+  refreshSiyuanKnotes,
+  selectedDay,
+  getTargetDailyDocId,
+  displayMode,
+  dailyNotebookId,
+  useNewQuery,
+  scrollTo,
+  createTodayDailyNote
+} = useData()
 const dateChange = (value) => {
   // console.log(value)
 

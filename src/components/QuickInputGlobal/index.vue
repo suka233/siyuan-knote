@@ -273,10 +273,12 @@ const handlePin = () => {
 }
 
 const handleHide = () => {
-  // localStorage.setItem('knote-quick-input-visible', 'false')
+  isPin.value = false
+  localStorage.setItem('knote-quick-input-pin', 'false')
+  localStorage.setItem('knote-quick-input-visible', 'false')
 
   // 开发环境，直接关闭窗口
-  localStorage.setItem('knote-quick-input-close', 'true')
+  // localStorage.setItem('knote-quick-input-close', 'true')
 }
 
 // 当editMode变化的时候，自动设置knote-quick-input-edit-mode
@@ -414,8 +416,8 @@ const renderProtyle = async () => {
 }
 const protyleContainer = ref<HTMLElement | null>(null)
 const handleProtyleKeyup = (e: KeyboardEvent) => {
-  // 如果是ctrl+enter，就发送并隐藏
-  if (e.key === 'Enter' && e.ctrlKey) {
+  // 如果是alt+enter，就发送并隐藏
+  if (e.key === 'Enter' && e.altKey) {
     send('protyle')
   }
 
