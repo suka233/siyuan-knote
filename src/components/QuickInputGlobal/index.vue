@@ -433,10 +433,26 @@ const handleProtyleKeyup = (e: KeyboardEvent) => {
 </script>
 
 <style lang="less">
-body {
+//body {
+//  .toolbar__window {
+//    visibility: hidden;
+//  }
+//
+//  //  为什么在quickInputGlobal中设置的css会影响到主渲染进程的样式啊？！
+//  //#status {
+//  //  visibility: hidden;
+//  //}
+//  .protyle-breadcrumb {
+//    display: none;
+//  }
+//  background-color: transparent;
+//}
+
+body:has(#KnoteQuickInputGlobal) {
   .toolbar__window {
     visibility: hidden;
   }
+
   #status {
     visibility: hidden;
   }

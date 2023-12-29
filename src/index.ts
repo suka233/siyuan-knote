@@ -3,10 +3,10 @@ import type { IModel, ITab } from 'siyuan'
 import 'uno.css'
 import { knoteIcon } from './assets/icon'
 import { initKNoteDock, registerIcon } from '@/utils'
-import './assets/index.less'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
 import { createApp } from 'vue'
 import QuickInputGlobal from './components/QuickInputGlobal/index.vue'
+import './assets/index.less'
 import Antd from 'ant-design-vue'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
@@ -193,7 +193,12 @@ export default class KnotePlugin extends Plugin {
         }
       })
       // 把plugin传入方便使用，注意这里的作用域是第二个插件的加载的作用域了，要和主窗口的knote通讯，可以通过localStorage
+      // 动态引入QuickInputGlobal组件
+
+      // import QuickInputGlobal from './components/QuickInputGlobal/index.vue'
+      // const app = createApp(import('./components/QuickInputGlobal/index.vue')).provide('plugin', this)
       const app = createApp(QuickInputGlobal).provide('plugin', this)
+      // const app = createApp(require('./components/QuickInputGlobal/index.vue')).provide('plugin', this)
       app.use(vuetify).use(Antd).mount(quickInput)
     }
   }
