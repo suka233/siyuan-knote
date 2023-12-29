@@ -81,8 +81,10 @@ export default class KnotePlugin extends Plugin {
     //
     // return
 
-    // 非knote启动的窗口的情况下，加载快速输入窗口
-    if (!window.location.search.includes('knote-quick-input=true')) {
+    // 非knote启动的窗口且为主窗口启动的情况下，创建快速输入窗口
+    // 观察发现，其它方式启动的窗口都会有window.html后缀，而主窗口启动的窗口没有，window.html后缀的窗口不会创建额外的托盘
+    if (!window.location.href.includes('window.html') && !window.location.search.includes('knote-quick-input=true')) {
+      sessionStorage.setItem('suka', 'suka')
       const { BrowserWindow } = require('@electron/remote')
       const remote = require('@electron/remote/main')
       console.log(remote)
@@ -169,7 +171,7 @@ export default class KnotePlugin extends Plugin {
 
         // knote-quick-input-pin
       })
-    } else {
+    } else if (window.location.search.includes('knote-quick-input=true')) {
       // 将quickInput的dom插入到body中
       console.log('quickInput窗口')
       const quickInput = document.createElement('div')
