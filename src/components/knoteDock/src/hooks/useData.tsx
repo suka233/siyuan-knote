@@ -289,7 +289,7 @@ limit 100000;`
   const createTodayDailyNote = async () => {
     createDailyNote(dailyNotebookId.value).then((res) => {
       // 赋值todayDailyDocId
-      console.log(res)
+      // console.log(res)
       todayDailyDocId.value = res.data.id
       message.success('KNote:今日日记创建成功')
     })

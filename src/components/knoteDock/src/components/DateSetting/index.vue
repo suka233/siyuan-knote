@@ -118,7 +118,7 @@ const disabledDate = (current) => {
 
 const siYuanNoteItems = ref<Array<Record<string, any>>>([])
 listNotebook().then((res) => {
-  console.log(res)
+  // console.log(res)
   siYuanNoteItems.value = res.data.notebooks.map((item: any) => {
     return {
       label: item.name,
