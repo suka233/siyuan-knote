@@ -49,7 +49,9 @@
         @keydown.up="handleChangeType"
         @keydown.down="handleChangeType"
         hide-details
+        :color="colorMap[knote.type].mainColor"
         :base-color="colorMap[knote.type].mainColor"
+        :theme="theme"
       />
       <a-tooltip title="shift+enter或者点我即可展开为思源编辑器" v-if="editMode === 'simple'">
         <expand-alt-outlined
@@ -77,7 +79,7 @@
 // 获取当日笔记id
 // 根据id获取protyle
 import { Plugin, Protyle } from 'siyuan'
-import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
 import { colorMap, quickCommandMap } from '@/components/knoteDock/src/config'
 import dayjs from 'dayjs'
@@ -177,6 +179,7 @@ const computedStyle = computed(() => {
 })
 const editMode = ref<'simple' | 'protyle'>('simple')
 
+const theme = ref('light')
 onMounted(() => {
   window.addEventListener('storage', (e) => {
     if (e.key === 'knote-quick-input-visible') {
@@ -194,6 +197,11 @@ onMounted(() => {
           break
       }
     }
+  })
+
+  nextTick(() => {
+    // mode: 0是浅色，1是深色
+    theme.value = globalThis?.siyuan?.config?.appearance?.mode === 0 ? 'light' : 'dark'
   })
 })
 
@@ -459,15 +467,25 @@ body:has(#KnoteQuickInputGlobal) {
   .protyle-breadcrumb {
     display: none;
   }
-  background-color: transparent;
+  //background-color: transparent;
 }
+//html[data-theme-mode='dark'] {
+//  body:has(#KnoteQuickInputGlobal) {
+//    .v-text-field .v-field--no-label input,
+//    .v-text-field .v-field--active input {
+//      opacity: 0.3 !important;
+//      color: white !important;
+//    }
+//  }
+//}
+
 #KnoteQuickInputGlobal {
   box-sizing: border-box;
   background-color: transparent;
   .knote-quick-input-global-wrap {
     //border: 1px solid red;
     border-radius: 0 0 8px 8px;
-    background-color: white;
+    //background-color: white;
     height: 100%;
     .标题栏 {
       padding: 0.5rem;
