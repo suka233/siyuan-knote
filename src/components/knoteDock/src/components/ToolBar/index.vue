@@ -1,13 +1,13 @@
 <template>
   <div id="toolbar" class="toolbar">
-    <a-row v-show="!isShowFilterPanel">
+    <a-row v-show="!isShowFilterPanel" class="w-full">
       <a-col :span="4"><span class="title">KNote</span></a-col>
       <a-col :span="12">
         <div class="日期选择器">
           <date-setting />
         </div>
       </a-col>
-      <a-col :span="8">
+      <a-col :span="8" class="flex justify-around">
         <a-popconfirm
           v-if="!todayDailyDocId"
           title="检测到今日日记还没有创建，是否创建？"
@@ -23,7 +23,7 @@
         <!--        <setting-pop />-->
       </a-col>
     </a-row>
-    <div v-show="isShowFilterPanel" class="flex">
+    <div v-show="isShowFilterPanel" class="flex w-full">
       <div class="切换面板 flex flex-1">
         <div
           v-for="item in segmentedOptions"
