@@ -12,6 +12,7 @@
           v-else
           @click="goDailyDoc(item.group)"
           :key="item.group"
+          title="点击即可跳转到对应的日记文档"
         >
           {{ item.group }}
         </div>
