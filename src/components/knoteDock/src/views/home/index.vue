@@ -63,6 +63,8 @@ const computedKnotes = computed(() => {
   if (!allSiyuanKnotes.value.length) {
     return []
   }
+  const start = performance.now()
+
   // 将最后一项作为group
   const group = Object.groupBy(allSiyuanKnotes.value, (item) => {
     return item?.hpath?.split('/')?.pop()
@@ -84,10 +86,25 @@ const computedKnotes = computed(() => {
     })
   // 根据panelDisplayMode过滤
   if (panelDisplayMode.value !== 'all') {
-    return result.filter((item) => {
+    const res = result.filter((item) => {
       return item.type === panelDisplayMode.value
     })
+
+    // region 计算耗时
+    const end = performance.now()
+    const timeTaken = end - start
+    console.log(`${res.length} knotes updated in ${timeTaken} ms`)
+    // endregion
+
+    return res
   }
+
+  // region 计算耗时
+  const end = performance.now()
+  const timeTaken = end - start
+  console.log(`${result.length} knotes updated in ${timeTaken} ms`)
+  // endregion
+
   return result
 })
 
