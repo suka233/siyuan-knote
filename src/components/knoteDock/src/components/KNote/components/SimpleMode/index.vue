@@ -49,7 +49,7 @@ const goSiYuan = (e: MouseEvent) => {
       y: e.screenY + 10
     })
   }
-  window.open(`siyuan://blocks/${props.data.id}`)
+  window.openFileByURL(`siyuan://blocks/${props.data.id}`)
 }
 
 // region 悬浮2秒自动打开浮窗

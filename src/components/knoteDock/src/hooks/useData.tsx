@@ -178,6 +178,30 @@ limit 100000;`
     })
   }
 
+  // 获取指定日期的日记文档id
+  const getDailyDocId = async (date) => {
+    if (!dailyNotebookId.value) {
+      return message.error('KNote: 请先设置思源笔记本')
+    }
+    const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${date}' and type = 'd'`
+    const daySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
+      dailyNotebookId.value
+    }' and A.name like 'custom-dailynote-${dayjs(date).format('YYYYMMDD')}' and B.type = 'd' order by A.value desc;`
+    // const allSql = `select * from blocks where box = "${dailyNotebookId.value}" and hpath like "/daily note/%${date}" and type = 'd'`
+    // 获取指定日期的日记文档id
+    return querySql(useNewQuery.value ? daySqlNew : daySql).then((res) => {
+      if (res.data.length) {
+        if (res.data.length > 1) {
+          message.info(`KNote:当前笔记本下存在多个${date}的日记，请检查`)
+        }
+        // 存在
+        return res.data[0].id
+      } else {
+        return message.error(`KNote:不存在${date}的日记，请新建`)
+      }
+    })
+  }
+
   const getTodayDailyDocId = async () => {
     const todaySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${today.value}' and type = 'd'`
     const todaySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
@@ -366,6 +390,7 @@ limit 100000;`
     todayDailyDocId,
     createTodayDailyNote,
     getTodayDailyDocId,
-    newDayNotify
+    newDayNotify,
+    getDailyDocId
   }
 }

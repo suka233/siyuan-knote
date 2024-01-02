@@ -7,7 +7,14 @@
       <!--      <k-note v-for="knote in allSiyuanKnotes" :key="knote.id" :data="knote" />-->
       <RecycleScroller :items="computedKnotes" class="scroller" key-field="id" v-slot="{ item }" ref="scrollerRef">
         <k-note :data="item" :key="item.id" v-if="item.type !== 'group'" />
-        <div class="h-46px line-height-46px text-center" v-else>{{ item.group }}</div>
+        <div
+          class="h-46px line-height-46px text-center cursor-pointer"
+          v-else
+          @click="goDailyDoc(item.group)"
+          :key="item.group"
+        >
+          {{ item.group }}
+        </div>
       </RecycleScroller>
     </div>
     <div v-show="!allSiyuanKnotes.length">暂无可以展示的Knote</div>
@@ -22,7 +29,7 @@ import KNote from '../../components/KNote/index.vue'
 import NewKnote from '@/components/knoteDock/src/components/NewKnote/index.vue'
 import QuickInput from '@/components/knoteDock/src/components/QuickInput/index.vue'
 import { computed, onMounted, ref } from 'vue'
-const { allSiyuanKnotes, showNewKnote, showQuickInput, panelDisplayMode, scrollTo } = useData()
+const { allSiyuanKnotes, showNewKnote, showQuickInput, panelDisplayMode, scrollTo, getDailyDocId } = useData()
 
 // const wrapRef = ref()
 // const newKnoteRef = ref()
@@ -107,6 +114,14 @@ const computedKnotes = computed(() => {
 
   return result
 })
+
+const goDailyDoc = async (date) => {
+  const id = await getDailyDocId(date)
+  if (!id) {
+    return
+  }
+  window.openFileByURL(`siyuan://blocks/${id}`)
+}
 
 const scrollerRef = ref(null)
 onMounted(() => {
