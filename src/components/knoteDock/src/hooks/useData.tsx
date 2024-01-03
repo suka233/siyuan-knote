@@ -261,7 +261,8 @@ limit 100000;`
       id: blockId,
       attrs: {
         'custom-knote-id': `${knote.id}`,
-        'custom-b': knote.type
+        'custom-b': knote.type,
+        'custom-knote-date':`${knote.createTime.slice(0,19)}`
       }
     })
 
