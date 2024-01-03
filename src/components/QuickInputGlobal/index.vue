@@ -204,6 +204,26 @@ onMounted(() => {
     // mode: 0是浅色，1是深色
     theme.value = globalThis?.siyuan?.config?.appearance?.mode === 0 ? 'light' : 'dark'
   })
+
+  // 使用动态插入的方式，避免在主渲染进程中出现样式
+  const css = `
+  body {
+    .toolbar__window {
+      visibility: hidden;
+    }
+
+    #status {
+      visibility: hidden;
+    }
+    .protyle-breadcrumb {
+      display: none;
+    }
+  }`
+
+  const styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  styleElement.innerHTML = css
+  document.head.insertAdjacentElement('beforeend', styleElement)
 })
 
 onUnmounted(() => {
@@ -459,19 +479,19 @@ const handleProtyleKeyup = (e: KeyboardEvent) => {
 //  background-color: transparent;
 //}
 
-body:has(#KnoteQuickInputGlobal) {
-  .toolbar__window {
-    visibility: hidden;
-  }
-
-  #status {
-    visibility: hidden;
-  }
-  .protyle-breadcrumb {
-    display: none;
-  }
-  //background-color: transparent;
-}
+//body:has(#KnoteQuickInputGlobal) {
+//  .toolbar__window {
+//    visibility: hidden;
+//  }
+//
+//  #status {
+//    visibility: hidden;
+//  }
+//  .protyle-breadcrumb {
+//    display: none;
+//  }
+//  //background-color: transparent;
+//}
 //html[data-theme-mode='dark'] {
 //  body:has(#KnoteQuickInputGlobal) {
 //    .v-text-field .v-field--no-label input,
