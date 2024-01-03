@@ -157,7 +157,8 @@ const handleChangeType = (type: string | KeyboardEvent) => {
         id: wrapId.value,
         attrs: {
           'custom-knote-id': `${knote.value.id}`,
-          'custom-b': knote.value.type
+          'custom-b': knote.value.type,
+          'custom-knote-date':`${knote.value.createTime.slice(0,19)}`
         }
       })
     }
@@ -279,7 +280,8 @@ const sendToSiYuan = async (knote: KNoteModel) => {
     id: blockId,
     attrs: {
       'custom-knote-id': `${knote.id}`,
-      'custom-b': knote.type
+      'custom-b': knote.type,
+      'custom-knote-date':`${knote.createTime.slice(0,19)}`
     }
   })
 }
@@ -417,7 +419,8 @@ const renderProtyle = async () => {
     id: wrapId.value,
     attrs: {
       'custom-knote-id': `${knote.value.id}`,
-      'custom-b': knote.value.type
+      'custom-b': knote.value.type,
+      'custom-knote-date':`${knote.value.createTime.slice(0,19)}`
     }
   })
   // 根据目标id渲染protyle
