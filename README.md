@@ -1,4 +1,7 @@
 # 思源笔记-knote 插件
+
+>这里有比较详细的图文介绍：[https://ld246.com/article/1703831299597](https://ld246.com/article/1703831299597)
+
 ## 介绍
 KNote的K意味着Keep，所以KNote的作用是帮助你持续记录
 
@@ -10,6 +13,8 @@ KNote的K意味着Keep，所以KNote的作用是帮助你持续记录
 
 ## 使用
 安装好KNote插件后，在右侧dock栏中会出现一个KNote的图标，点击即可唤出KNote的面板，然后点击面板内的设置按钮，设置指定的笔记本，即可自动刷新
+
+具体可以看这里：[https://ld246.com/article/1703831299597](https://ld246.com/article/1703831299597)
 
 ## 限制
 1.~~目前仅仅支持标准格式的daily note,即如果你没有更改过daily note的路径,那么这个插件就可以正常使用，或者日记的路径格式为形似如下这种：`/daily note/年-月-日`,那么应该也能正常使用。之后会慢慢适配其它路径格式的daily note~~
@@ -26,6 +31,15 @@ KNote的K意味着Keep，所以KNote的作用是帮助你持续记录
 流向的地方当然是我最爱的思源笔记，但是最方便的方法？ok，是时候开发全平台的KNote了。目前独立桌面端的开发进度为70%，支持全局添加，同步思源Callout,固定至桌面等等功能，如果你感兴趣，欢迎进入QQ群讨论
 
 ## 更新日志
+
+### v2.0.0-beta.6
+
+修复：
+
+修复在某些设备上has选择器造成的卡顿问题。
+
+感谢[闪卡增强](https://github.com/zxhd863943427/siyuan-plugin-flash-enhance)插件作者[弘哥](https://github.com/zxhd863943427)和[胖佬](https://ld246.com/member/mozhu)和折腾群里其他大佬帮助定位和修复此缺陷，谢谢你们
+
 
 ### v2.0.0-beta.5
 
