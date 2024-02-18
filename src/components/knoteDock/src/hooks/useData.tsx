@@ -262,7 +262,7 @@ limit 100000;`
       attrs: {
         'custom-knote-id': `${knote.id}`,
         'custom-b': knote.type,
-        'custom-knote-date':`${knote.createTime.slice(0,19)}`
+        'custom-knote-date': `${knote.createTime.slice(0, 19)}`
       }
     })
 
@@ -317,6 +317,7 @@ limit 100000;`
       // console.log(res)
       todayDailyDocId.value = res.data.id
       message.success('KNote:今日日记创建成功')
+      window.openFileByURL(`siyuan://blocks/${todayDailyDocId.value}`)
     })
   }
 
