@@ -5,4 +5,14 @@ declare interface Window {
     siyuan: siyuan
     Plugin: Plugin
   }
+  openFileByURL: (url: string) => void
+}
+declare global {
+  interface Window {
+    openFileByURL: (url: string) => void
+    kmindApi: {
+      siyuan: siyuan
+      Plugin: Plugin
+    }
+  }
 }
