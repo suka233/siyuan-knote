@@ -1,4 +1,4 @@
-import { 向思源请求数据 } from '@/utils/request'
+import { http, 向思源请求数据 } from '@/utils/request'
 import type { ISetBlockAttrsParam } from '@/api/public/siyaunTypes'
 enum Api {
   SQL = '/api/query/sql',
@@ -194,4 +194,16 @@ export const listNotebook = () => {
  */
 export const createDailyNote = (notebook) => {
   return 向思源请求数据(Api['创建日记'], { notebook })
+}
+
+export const getFileToBase64 = async (path: string) => {
+  const response = await http(Api.GetFile, { path })
+  const blob = await response.blob()
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
 }

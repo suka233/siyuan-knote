@@ -1,17 +1,31 @@
-import {
-  SmileOutlined,
-  InfoCircleOutlined,
-  BulbOutlined,
-  BellOutlined,
-  CheckCircleOutlined,
-  CloseOutlined,
-  WarningOutlined,
-  QuestionCircleOutlined,
-  StopOutlined,
-  BugOutlined,
-  BookOutlined,
-  EditOutlined
-} from '@ant-design/icons-vue'
+// import {
+//   SmileOutlined,
+//   InfoCircleOutlined,
+//   BulbOutlined,
+//   BellOutlined,
+//   CheckCircleOutlined,
+//   CloseOutlined,
+//   WarningOutlined,
+//   QuestionCircleOutlined,
+//   StopOutlined,
+//   BugOutlined,
+//   BookOutlined,
+//   EditOutlined
+// } from '@ant-design/icons-vue'
+
+import lightSVG from '/img/light.svg'
+import defaultSVG from '/img/default.svg'
+import infoSVG from '/img/info.svg'
+import bellSVG from '/img/bell.svg'
+import checkSVG from '/img/check.svg'
+import wrongSVG from '/img/wrong.svg'
+import warnSVG from '/img/warn.svg'
+import questionSVG from '/img/question.svg'
+import errorSVG from '/img/error.svg'
+import bugSVG from '/img/bug.svg'
+import noteSVG from '/img/note.svg'
+import penSVG from '/img/pen.svg'
+
 interface IColorMap {
   [key: string]: {
     mainColor: string
@@ -28,7 +42,8 @@ export const colorMap: IColorMap = {
     secondaryColor: '#ececec0a',
     desc: '默认',
     descEn: 'default',
-    icon: SmileOutlined
+    // icon: SmileOutlined
+    icon: defaultSVG
   },
   info: {
     mainColor: '#3889c4',
@@ -36,14 +51,16 @@ export const colorMap: IColorMap = {
     // secondaryColor: '#eef5f880',
     desc: '信息',
     descEn: 'info',
-    icon: InfoCircleOutlined
+    // icon: InfoCircleOutlined
+    icon: infoSVG
   },
   light: {
     mainColor: '#ffce52',
     secondaryColor: '#ffce520a',
     desc: '灵感',
     descEn: 'light',
-    icon: BulbOutlined
+    // icon: BulbOutlined
+    icon: lightSVG
   },
   bell: {
     mainColor: '#ffae30',
@@ -51,7 +68,8 @@ export const colorMap: IColorMap = {
     secondaryColor: '#ffae300a',
     desc: '提醒',
     descEn: 'bell',
-    icon: BellOutlined
+    // icon: BellOutlined
+    icon: bellSVG
   },
   check: {
     mainColor: '#79b453',
@@ -59,7 +77,8 @@ export const colorMap: IColorMap = {
     secondaryColor: '#79b4530a',
     desc: '正确',
     descEn: 'check',
-    icon: CheckCircleOutlined
+    // icon: CheckCircleOutlined
+    icon: checkSVG
   },
   wrong: {
     mainColor: '#de2a42',
@@ -67,7 +86,8 @@ export const colorMap: IColorMap = {
     secondaryColor: '#de2a420a',
     desc: '错误',
     descEn: 'wrong',
-    icon: CloseOutlined
+    // icon: CloseOutlined
+    icon: wrongSVG
   },
   warn: {
     mainColor: '#ffcd4c',
@@ -75,7 +95,8 @@ export const colorMap: IColorMap = {
     secondaryColor: '#ffcd4c0a',
     desc: '警告',
     descEn: 'warn',
-    icon: WarningOutlined
+    // icon: WarningOutlined
+    icon: warnSVG
   },
   question: {
     mainColor: '#bf122d',
@@ -83,7 +104,8 @@ export const colorMap: IColorMap = {
     secondaryColor: '#bf122d0a',
     desc: '问题',
     descEn: 'question',
-    icon: QuestionCircleOutlined
+    // icon: QuestionCircleOutlined
+    icon: questionSVG
   },
   error: {
     mainColor: '#de2a42',
@@ -91,7 +113,8 @@ export const colorMap: IColorMap = {
     secondaryColor: '#de2a420a',
     desc: '禁止',
     descEn: 'error',
-    icon: StopOutlined
+    // icon: StopOutlined
+    icon: errorSVG
   },
   bug: {
     mainColor: '#9366cd',
@@ -99,7 +122,8 @@ export const colorMap: IColorMap = {
     secondaryColor: '#9366cd0a',
     desc: 'bug',
     descEn: 'bug',
-    icon: BugOutlined
+    // icon: BugOutlined
+    icon: bugSVG
   },
   note: {
     mainColor: '#6c7c85',
@@ -107,7 +131,8 @@ export const colorMap: IColorMap = {
     secondaryColor: '#6c7c850a',
     desc: '注记',
     descEn: 'note',
-    icon: BookOutlined
+    // icon: BookOutlined
+    icon: noteSVG
   },
   pen: {
     mainColor: '#293137',
@@ -115,7 +140,8 @@ export const colorMap: IColorMap = {
     secondaryColor: '#2931370a',
     desc: '记录',
     descEn: 'pen',
-    icon: EditOutlined
+    // icon: EditOutlined
+    icon: penSVG
   }
 }
 

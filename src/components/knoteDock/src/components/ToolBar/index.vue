@@ -35,12 +35,24 @@
           @click="handleSwitchPanel(item)"
           class="flex-1 cursor-pointer text-center"
         >
-          <component
+          <!--          <component-->
+          <!--            v-if="item?.payload?.icon"-->
+          <!--            :is="item?.payload?.icon"-->
+          <!--            :style="{ color: item.value === panelDisplayMode ? 'white' : item?.payload?.mainColor }"-->
+          <!--          />-->
+          <span
             v-if="item?.payload?.icon"
-            :is="item?.payload?.icon"
-            :style="{ color: item.value === panelDisplayMode ? 'white' : item?.payload?.mainColor }"
-          />
+            :style="{
+              backgroundColor: item.value === panelDisplayMode ? 'white' : item?.payload?.mainColor,
+              mask: `url(/plugins/knote-plugin/img/${item?.payload?.descEn}.svg) no-repeat center / contain`,
+              display: 'inline-block',
+              width: '0.8rem',
+              marginRight: '0.2rem'
+            }"
+            >&nbsp;</span
+          >
           <span v-else>{{ item.value }}</span>
+          <!--          <span>{{ item.value }}</span>-->
         </div>
       </div>
     </div>
@@ -84,7 +96,7 @@ const segmentedOptions = ref<Array<Record<string, any>>>([
   {
     value: '<',
     payload: {
-      icon: LeftCircleFilled,
+      // icon: LeftCircleFilled,
       descEn: '返回'
     }
   }

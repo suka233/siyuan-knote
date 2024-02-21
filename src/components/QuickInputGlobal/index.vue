@@ -12,10 +12,20 @@
                 class="tags"
               >
                 <template #icon>
-                  <component
-                    :is="item.icon"
-                    :style="{ color: knote.type === item.descEn ? 'white' : item.mainColor }"
-                  />
+                  <!--                  <component-->
+                  <!--                    :is="item.icon"-->
+                  <!--                    :style="{ color: knote.type === item.descEn ? 'white' : item.mainColor }"-->
+                  <!--                  />-->
+                  <span
+                    :style="{
+                      backgroundColor: knote.type === item.descEn ? 'white' : item.mainColor,
+                      mask: `url(/plugins/knote-plugin/img/${item.descEn}.svg) no-repeat center / contain`,
+                      display: 'inline-block',
+                      width: '0.8rem',
+                      marginRight: '0.2rem'
+                    }"
+                    >&nbsp;</span
+                  >
                 </template>
                 <span :style="{ color: knote.type === item.descEn ? 'white' : 'gray' }">{{ item.descEn }}</span>
               </a-tag>
@@ -158,7 +168,7 @@ const handleChangeType = (type: string | KeyboardEvent) => {
         attrs: {
           'custom-knote-id': `${knote.value.id}`,
           'custom-b': knote.value.type,
-          'custom-knote-date':`${knote.value.createTime.slice(0,19)}`
+          'custom-knote-date': `${knote.value.createTime.slice(0, 19)}`
         }
       })
     }
@@ -281,7 +291,7 @@ const sendToSiYuan = async (knote: KNoteModel) => {
     attrs: {
       'custom-knote-id': `${knote.id}`,
       'custom-b': knote.type,
-      'custom-knote-date':`${knote.createTime.slice(0,19)}`
+      'custom-knote-date': `${knote.createTime.slice(0, 19)}`
     }
   })
 }
@@ -420,7 +430,7 @@ const renderProtyle = async () => {
     attrs: {
       'custom-knote-id': `${knote.value.id}`,
       'custom-b': knote.value.type,
-      'custom-knote-date':`${knote.value.createTime.slice(0,19)}`
+      'custom-knote-date': `${knote.value.createTime.slice(0, 19)}`
     }
   })
   // 根据目标id渲染protyle

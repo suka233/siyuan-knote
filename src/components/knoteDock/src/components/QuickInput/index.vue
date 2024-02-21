@@ -10,7 +10,7 @@
             @click="handleChangeType(item.descEn!)"
           >
             <template #icon>
-              <component :is="item.icon" :style="{ color: knote.type === item.descEn ? 'white' : item.mainColor }" />
+              <!--              <component :is="item.icon" :style="{ color: knote.type === item.descEn ? 'white' : item.mainColor }" />-->
             </template>
             <span :style="{ color: knote.type === item.descEn ? 'white' : 'gray' }">{{ item.descEn }}</span>
           </a-tag>
@@ -205,7 +205,7 @@ const handleChangeType = (type: string | KeyboardEvent) => {
       attrs: {
         'custom-knote-id': `${knote.value.id}`,
         'custom-b': knote.value.type,
-        'custom-knote-date':`${knote.value.createTime.slice(0,19)}`
+        'custom-knote-date': `${knote.value.createTime.slice(0, 19)}`
       }
     })
   }
@@ -301,7 +301,7 @@ const renderProtyle = async () => {
     attrs: {
       'custom-knote-id': `${knote.value.id}`,
       'custom-b': knote.value.type,
-      'custom-knote-date':`${knote.value.createTime.slice(0,19)}`
+      'custom-knote-date': `${knote.value.createTime.slice(0, 19)}`
     }
   })
   // 根据目标id渲染protyle

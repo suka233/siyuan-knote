@@ -1,4 +1,4 @@
-import { Plugin } from 'siyuan'
+import { Dialog, getFrontend, Menu, Plugin } from 'siyuan'
 import type { ITab } from 'siyuan'
 import 'uno.css'
 import { knoteIcon } from './assets/icon'
@@ -12,6 +12,10 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import KnoteDialog from './components/knoteDialog/index.vue'
+import { useTheme } from '@/hooks/useTheme'
+import { colorMap } from '@/components/knoteDock/src/config'
+import { setBlockAttrs } from '@/api/public'
 export default class KnotePlugin extends Plugin {
   // private isMobile!: boolean
   // public menuElement!: HTMLElement
@@ -21,7 +25,9 @@ export default class KnotePlugin extends Plugin {
     name: string
     tab: ITab
   }>
-
+  private menuElement: HTMLElement
+  private isMobile: boolean
+  private blockIconEventBindThis = this.blockIconEvent.bind(this)
   constructor(options) {
     super(options)
     // this.tab = undefined
@@ -32,8 +38,8 @@ export default class KnotePlugin extends Plugin {
     // 注册图标
     registerIcon('iconKnote', '1024', knoteIcon)
 
-    // const frontEnd = getFrontend()
-    // this.isMobile = frontEnd === 'mobile' || frontEnd === 'browser-mobile'
+    const frontEnd = getFrontend()
+    this.isMobile = frontEnd === 'mobile' || frontEnd === 'browser-mobile'
 
     // 初始化顶栏菜单按钮
     // this.menuElement = this.addTopBar({
@@ -54,7 +60,7 @@ export default class KnotePlugin extends Plugin {
     // this.tab = initKvideoTab(this)
 
     // 初始化dock
-    const res = await initKNoteDock(this)
+    await initKNoteDock(this)
     // console.log('xx', res)
     // const { updateRenderer } = useKVideoRenderer()
     // this.eventBus.on('ws-main', updateRenderer)
@@ -63,7 +69,7 @@ export default class KnotePlugin extends Plugin {
     this.eventBus.on('open-siyuan-url-plugin', (e) => {
       console.log(e)
     })
-    const { refreshSiyuanKnotes, showQuickInput } = useData()
+    const { refreshSiyuanKnotes } = useData()
     this.eventBus.on('ws-main', (e) => {
       if (e.detail.cmd === 'databaseIndexCommit') {
         // console.log(`检测到合法：${e}`)
@@ -207,7 +213,139 @@ export default class KnotePlugin extends Plugin {
       // const app = createApp(require('./components/QuickInputGlobal/index.vue')).provide('plugin', this)
       app.use(vuetify).use(Antd).mount(quickInput)
     }
+
+    // 插入自定义css
+    useTheme()
+
+    // 插入自定义菜单
+    this.eventBus.on('click-blockicon', this.blockIconEventBindThis)
   }
 
   onunload() {}
+
+  // 创建菜单
+  private addMenu(rect: DOMRect) {
+    const menu = new Menu('Kmind')
+
+    menu.addItem({
+      icon: 'iconInfo',
+      label: 'KNote全局配置',
+      click: () => {
+        this.openConfigDialog('KNote全局配置', 'GlobalConfig')
+      }
+    })
+
+    // menu.addItem({
+    //   icon: 'iconInfo',
+    //   label: 'Kmind文件夹',
+    //   click: () => {
+    //     this.openConfigDialog('Kmind文件夹', 'KmindDock')
+    //   }
+    // })
+
+    if (this.isMobile) {
+      menu.fullscreen()
+    } else {
+      menu.open({
+        x: rect.left,
+        y: rect.bottom
+      })
+    }
+  }
+
+  // 打开配置Dialog
+  private openConfigDialog(title: string, type?: string) {
+    new Dialog({
+      title,
+      content: `<div class="b3-dialog__content"><div id="knote-plugin-config-dialog"></div></div>`,
+      width: '800px',
+      height: '500px'
+    })
+    const root = document.getElementById('knote-plugin-config-dialog')
+    // new Protyle(this.app, root, {
+    //   blockId: '20230712105058-fkptf24'
+    // })
+    // console.log(this.app)
+    const configDialogApp = createApp(KnoteDialog, { type })
+    configDialogApp.use(Antd)
+    configDialogApp.mount(root!)
+  }
+
+  private blockIconEvent({ detail }: any) {
+    console.log(detail)
+    if (detail.blockElements.length > 1) {
+      return
+    }
+    const ele: HTMLDivElement = detail.blockElements[0]
+    if (!ele.classList.contains('bq')) {
+      return
+    }
+    const menu: Menu = detail.menu
+    const submenus: any[] = []
+    const selectId = ele.getAttribute('data-node-id')!
+
+    Object.keys(colorMap).forEach((key) => {
+      if (key === 'default') return
+      const button = document.createElement('button')
+      button.className = 'b3-menu__item'
+      button.style.borderLeft = `0.2rem solid ${colorMap[key].mainColor}`
+      button.style.backgroundColor = colorMap[key].secondaryColor
+      button.innerHTML = `
+<div
+  style="display: flex; justify-content: space-between; width:100%"
+>
+    <span
+    style="
+      background-color: ${colorMap[key].mainColor};
+      mask: url(/plugins/knote-plugin/img/${colorMap[key].descEn}.svg) no-repeat center / contain;
+      display: inline-block;
+      width: 0.8rem;
+      margin-right: 0.2rem;
+    "
+    >&nbsp;
+    </span>
+    <span>
+    ${colorMap[key].desc}
+    </span>
+</div>
+      `
+      button.onclick = () => {
+        setBlockAttrs({
+          id: selectId,
+          attrs: {
+            'custom-b': key
+          }
+        })
+      }
+      submenus.push({
+        element: button
+      })
+    })
+
+    // 分割线
+    submenus.push({
+      type: 'separator'
+    })
+    const defaultBtn = document.createElement('button')
+    defaultBtn.className = 'b3-menu__item'
+    defaultBtn.innerHTML = `<svg class="b3-menu__icon" style=""><use xlink:href="#iconRefresh"></use></svg><span class="b3-menu__label">恢复默认设置</span>`
+    defaultBtn.onclick = () => {
+      setBlockAttrs({
+        id: selectId,
+        attrs: {
+          'custom-b': ''
+        }
+      })
+    }
+    submenus.push({
+      element: defaultBtn
+    })
+    console.log(submenus)
+    menu.addItem({
+      icon: 'iconKnote',
+      label: 'KNote',
+      type: 'submenu',
+      submenu: submenus
+    })
+  }
 }
