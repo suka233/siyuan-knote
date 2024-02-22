@@ -1,4 +1,4 @@
-import { Dialog, getFrontend, Menu, Plugin } from 'siyuan'
+import { Dialog, getFrontend, Menu, Plugin, type Protyle } from 'siyuan'
 import type { ITab } from 'siyuan'
 import 'uno.css'
 import { knoteIcon } from './assets/icon'
@@ -14,7 +14,7 @@ import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import KnoteDialog from './components/knoteDialog/index.vue'
 import { useTheme } from '@/hooks/useTheme'
-import { colorMap } from '@/components/knoteDock/src/config'
+import { colorMap, quickCommandMap } from '@/components/knoteDock/src/config'
 import { setBlockAttrs } from '@/api/public'
 export default class KnotePlugin extends Plugin {
   // private isMobile!: boolean
@@ -28,12 +28,26 @@ export default class KnotePlugin extends Plugin {
   private menuElement: HTMLElement
   private isMobile: boolean
   private blockIconEventBindThis = this.blockIconEvent.bind(this)
+  private databaseIndexCommitPromise: Promise<void>
+  private resolveDatabaseIndexCommitPromise: () => void
+  // 使用斜杠命令插入的callout的id
+  private calloutId: string
+  // 检测到了合法的databaseIndexCommit事件时，才解决Promise
+  private validDatabaseIndexCommit: boolean
   constructor(options) {
     super(options)
     // this.tab = undefined
     this.tabs = []
+
+    // 初始化Promise
+    this.resetDatabaseIndexCommitPromise()
   }
 
+  resetDatabaseIndexCommitPromise() {
+    this.databaseIndexCommitPromise = new Promise<void>((resolve) => {
+      this.resolveDatabaseIndexCommitPromise = resolve
+    })
+  }
   async onload() {
     // 注册图标
     registerIcon('iconKnote', '1024', knoteIcon)
@@ -71,9 +85,25 @@ export default class KnotePlugin extends Plugin {
     })
     const { refreshSiyuanKnotes } = useData()
     this.eventBus.on('ws-main', (e) => {
+      // console.log(e)
       if (e.detail.cmd === 'databaseIndexCommit') {
-        // console.log(`检测到合法：${e}`)
+        console.log(`检测到合法：${e}`)
         refreshSiyuanKnotes()
+
+        if (this.validDatabaseIndexCommit) {
+          // 当事件发生时，解决Promise
+          this.resolveDatabaseIndexCommitPromise()
+          // 重置Promise以便下一次使用
+          this.resetDatabaseIndexCommitPromise()
+          this.validDatabaseIndexCommit = false
+        }
+      }
+
+      if (e.detail.cmd === 'transactions') {
+        // 当这次transactions包括了calloutId的时候，说明是合法的
+        if (e.detail?.data?.[0]?.doOperations?.some((item) => item.id === this.calloutId)) {
+          this.validDatabaseIndexCommit = true
+        }
       }
     })
 
@@ -219,6 +249,55 @@ export default class KnotePlugin extends Plugin {
 
     // 插入自定义菜单
     this.eventBus.on('click-blockicon', this.blockIconEventBindThis)
+
+    // 插入斜杠菜单
+    this.protyleSlash = quickCommandMap.map((item) => ({
+      filter: item.key.split('|'),
+      html: `
+      <div
+  style="justify-content: space-between; width:100%;border-left: 0.2rem solid ${
+    colorMap[item.description].mainColor
+  };background-color: ${colorMap[item.description].secondaryColor};border-radius: 0.2rem;margin: 0.2rem 0;"
+>
+    <span
+    style="
+      background-color: ${colorMap[item.description].mainColor};
+      mask: url(/plugins/knote-plugin/img/${colorMap[item.description].descEn}.svg) no-repeat center / contain;
+      display: inline-block;
+      width: 0.8rem;
+      margin-left: 0.2rem;
+    "
+    >&nbsp;
+    </span>
+    <span>
+    ${colorMap[item.description].desc}
+    </span>
+    <span style="float:right;font-size: 0.8rem;color:darkgray">
+    可以使用的快捷指令${item.key.split('|').join('、')}
+</span>
+</div>
+      `,
+      id: `knote-slash-${item.command}`,
+      callback: async (protyle: Protyle) => {
+        // console.log(this)
+        protyle.insert('>')
+        // 获取当前的id
+        this.calloutId = protyle
+          .getRange(protyle.protyle.element)!
+          .commonAncestorContainer!.parentElement!.parentElement!.getAttribute('data-node-id')!
+        // 用户体验优化，由于以下操作会有延迟，所以这里直接前端设置一下属性即可
+        document.querySelector(`[data-node-id="${this.calloutId}"]`)!.setAttribute('custom-b', item.command)
+        // 等待databaseIndexCommit事件
+        await this.databaseIndexCommitPromise
+        // console.log('开始设置属性')
+        setBlockAttrs({
+          id: this.calloutId,
+          attrs: {
+            'custom-b': item.command
+          }
+        })
+      }
+    }))
   }
 
   onunload() {}
@@ -272,7 +351,7 @@ export default class KnotePlugin extends Plugin {
   }
 
   private blockIconEvent({ detail }: any) {
-    console.log(detail)
+    // console.log(detail)
     if (detail.blockElements.length > 1) {
       return
     }
@@ -285,7 +364,6 @@ export default class KnotePlugin extends Plugin {
     const selectId = ele.getAttribute('data-node-id')!
 
     Object.keys(colorMap).forEach((key) => {
-      if (key === 'default') return
       const button = document.createElement('button')
       button.className = 'b3-menu__item'
       button.style.borderLeft = `0.2rem solid ${colorMap[key].mainColor}`
@@ -340,7 +418,7 @@ export default class KnotePlugin extends Plugin {
     submenus.push({
       element: defaultBtn
     })
-    console.log(submenus)
+    // console.log(submenus)
     menu.addItem({
       icon: 'iconKnote',
       label: 'KNote',

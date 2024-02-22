@@ -39,7 +39,8 @@ interface IColorMap {
 export const colorMap: IColorMap = {
   default: {
     mainColor: '#c5c5c5',
-    secondaryColor: '#ececec0a',
+    // secondaryColor: '#ececec0a',
+    secondaryColor: '#c5c5c50a',
     desc: '默认',
     descEn: 'default',
     // icon: SmileOutlined
@@ -163,55 +164,55 @@ export const quickCommandMap = [
   // },
   //default
   {
-    key: 'default|/default',
+    key: 'default|/default|默认|引用|quote|knote',
     description: 'default',
     command: 'default'
   },
   // info
   {
-    key: 'info|/info',
+    key: 'info|/info|xx|xinxi|信息',
     description: 'info',
     command: 'info'
   },
   // light
   {
-    key: 'light|/light',
+    key: 'light|/light|linggan|灵感|lg',
     description: 'light',
     command: 'light'
   },
   // bell
   {
-    key: 'bell|/bell',
+    key: 'bell|/bell|tixing|提醒|tx',
     description: 'bell',
     command: 'bell'
   },
   // check
   {
-    key: 'check|/check',
+    key: 'check|/check|right|/right|正确|zhengque|zq',
     description: 'check',
     command: 'check'
   },
   // wrong
   {
-    key: 'wrong|/wrong',
+    key: 'wrong|/wrong|error|/error|cuowu|错误|cw',
     description: 'wrong',
     command: 'wrong'
   },
   // warn
   {
-    key: 'warn|/warn',
+    key: 'warn|/warn|jinggao|警告|jg',
     description: 'warn',
     command: 'warn'
   },
   // question
   {
-    key: 'question|/question',
+    key: 'question|/question|wenhao|问题|wh|wt|问题|wenti|yiwen|yw',
     description: 'question',
     command: 'question'
   },
   // error
   {
-    key: 'error|/error',
+    key: 'error|/error|forbidden|/forbidden|jinzhi|禁止|jz',
     description: 'error',
     command: 'error'
   },
@@ -223,13 +224,13 @@ export const quickCommandMap = [
   },
   // note
   {
-    key: 'note|/note',
+    key: 'note|/note|日记|注记|rj|zj',
     description: 'note',
     command: 'note'
   },
   // pen
   {
-    key: 'pen|/pen',
+    key: 'pen|/pen|记录|jl',
     description: 'pen',
     command: 'pen'
   }
