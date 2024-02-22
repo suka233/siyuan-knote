@@ -3,15 +3,19 @@ import { colorMap } from '@/components/knoteDock/src/config'
 export const useTheme = () => {
   let css = `
   [data-type='NodeBlockquote'].bq[updated][custom-b] > :first-child {
-    font-weight: bold;
-    padding-left: 2rem;
+    font-weight: bold !important;
+    padding-left: 2rem !important;
   }
   [data-type='NodeBlockquote'].bq[updated]::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      width: 1.5rem;
-      height: 1.5rem;
+      content: '' !important;
+      position: absolute !important;
+      left: 0 !important;
+      width: 1.5rem !important;
+      height: 1.5rem !important;
+    }
+
+  [data-type='NodeBlockquote'].bq[updated]::after {
+      content: '' !important;
     }
   `
   const styleElement = document.createElement('style')
@@ -24,12 +28,12 @@ export const useTheme = () => {
       const element = colorMap[key]
       css += `
       [data-type='NodeBlockquote'].bq[updated][custom-b='${key}'] > :first-child::before {
-          background-color: ${element.mainColor};
-          mask: url(/plugins/knote-plugin/img/${key}.svg) no-repeat center / contain;
+          background-color: ${element.mainColor} !important;
+          mask: url(/plugins/knote-plugin/img/${key}.svg) no-repeat center / contain !important;
       }
       [data-type='NodeBlockquote'].bq[updated][custom-b='${key}'] {
-          border-left: 0.25rem solid ${element.mainColor};
-          background-color:${element.secondaryColor};
+          border-left: 0.25rem solid ${element.mainColor} !important;
+          background-color:${element.secondaryColor} !important;
       }
     `
     }
