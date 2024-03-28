@@ -16,6 +16,9 @@ import KnoteDialog from './components/knoteDialog/index.vue'
 import { useTheme } from '@/hooks/useTheme'
 import { colorMap, quickCommandMap } from '@/components/knoteDock/src/config'
 import { setBlockAttrs } from '@/api/public'
+import { createI18n } from 'vue-i18n'
+import zh from './i18n/zh_CN.json'
+import en from './i18n/en_US.json'
 export default class KnotePlugin extends Plugin {
   // private isMobile!: boolean
   // public menuElement!: HTMLElement

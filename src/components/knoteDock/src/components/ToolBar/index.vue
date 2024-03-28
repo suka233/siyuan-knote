@@ -10,7 +10,7 @@
       <a-col :span="8" class="flex justify-around">
         <a-popconfirm
           v-if="!todayDailyDocId"
-          title="检测到今日日记还没有创建，是否创建？"
+          :title="$t('knoteDock.popconfirmTitle')"
           cancel-text="不创建"
           ok-text="创建"
           @confirm="handleAddConfirm"

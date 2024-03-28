@@ -1,3 +1,8 @@
 {
-  "openKNote": "打开KNote"
+  "openKNote": "打开KNote",
+  "knoteDock": {
+    "openToTarget": "点击即可跳转到对应的日记文档",
+    "onKNotes": "暂无可以展示的KNote",
+    "popconfirmTitle": "检测到今日日记还没有创建，是否创建？"
+  }
 }

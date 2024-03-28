@@ -10,6 +10,9 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import { createI18n, useI18n } from 'vue-i18n'
+import zh from '@/i18n/zh_CN.json'
+import en from '@/i18n/en_US.json'
 // 新建kmind tab页
 
 // 注册icon
@@ -28,6 +31,7 @@ export const registerIcon = (name, size, svg) => {
 
 export const initKNoteDock = async (plugin: Plugin) => {
   let knoteApp
+
   plugin.addDock({
     config: {
       position: 'RightTop',
@@ -36,7 +40,7 @@ export const initKNoteDock = async (plugin: Plugin) => {
         height: 0
       },
       icon: 'iconKnote',
-      title: 'Knote'
+      title: plugin.i18n.openKNote
     },
     type: 'KnoteDock',
     init() {
@@ -52,8 +56,16 @@ export const initKNoteDock = async (plugin: Plugin) => {
           }
         }
       })
+      const i18n = createI18n({
+        locale: 'en',
+        allowComposition: true,
+        messages: {
+          'zh-CN': zh,
+          en: en
+        }
+      })
       knoteApp = createApp(KnoteDock).provide('plugin', plugin)
-      knoteApp.use(Antd).use(vuetify).use(VueVirtualScroller).mount(root)
+      knoteApp.use(Antd).use(vuetify).use(VueVirtualScroller).use(i18n).mount(root)
       this.data.destroy = () => {
         root && knoteApp.unmount()
       }

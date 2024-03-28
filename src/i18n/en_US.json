@@ -1,3 +1,9 @@
 {
-  "openKNote": "openKNote"
+  "openKNote": "openKNote",
+  "knoteDock": {
+    "openToTarget": "Click to jump directly to the corresponding diary document",
+    "onKNotes": "There are no KNotes available to display.",
+    "popconfirmTitle": "Detected that today's diary has not been created yet. Would you like to create it?"
+  }
+
 }

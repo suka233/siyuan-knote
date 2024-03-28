@@ -12,13 +12,14 @@
           v-else
           @click="goDailyDoc(item.group)"
           :key="item.group"
-          title="点击即可跳转到对应的日记文档"
+          :title="t('knoteDock.openToTarget')"
         >
+          <!--          title="点击即可跳转到对应的日记文档"-->
           {{ item.group }}
         </div>
       </RecycleScroller>
     </div>
-    <div v-show="!allSiyuanKnotes.length">暂无可以展示的Knote</div>
+    <div v-show="!allSiyuanKnotes.length">{{ $t('knoteDock.onKNotes') }}</div>
     <quick-input v-model:visible="showQuickInput" />
   </div>
 </template>
@@ -30,8 +31,9 @@ import KNote from '../../components/KNote/index.vue'
 import NewKnote from '@/components/knoteDock/src/components/NewKnote/index.vue'
 import QuickInput from '@/components/knoteDock/src/components/QuickInput/index.vue'
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 const { allSiyuanKnotes, showNewKnote, showQuickInput, panelDisplayMode, scrollTo, getDailyDocId } = useData()
-
+const { t } = useI18n()
 // const wrapRef = ref()
 // const newKnoteRef = ref()
 // const knoteContainerRef = ref()
