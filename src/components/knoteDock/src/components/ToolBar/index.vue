@@ -10,16 +10,18 @@
       <a-col :span="8" class="flex justify-around">
         <a-popconfirm
           v-if="!todayDailyDocId"
-          :title="$t('knoteDock.popconfirmTitle')"
-          cancel-text="不创建"
-          ok-text="创建"
+          :title="t('knoteDock.popconfirmTitle')"
+          :cancel-text="t('knoteDock.dontCreate')"
+          :ok-text="t('knoteDock.create')"
           @confirm="handleAddConfirm"
         >
-          <div class="操作按钮" title="默认会在今天插入一条KNote">新建</div>
+          <div class="操作按钮" :title="t('knoteDock.createTitle')">{{ t('knoteDock.create') }}</div>
         </a-popconfirm>
-        <div class="操作按钮" @click="newKnote" title="默认会在今天插入一条KNote" v-else>新建</div>
-        <div class="操作按钮" @click="refresh">刷新</div>
-        <div class="操作按钮" @click="filterPanel">筛选</div>
+        <div class="操作按钮" @click="newKnote" :title="t('knoteDock.createTitle')" v-else>
+          {{ t('knoteDock.create') }}
+        </div>
+        <div class="操作按钮" @click="refresh">{{ t('knoteDock.refresh') }}</div>
+        <div class="操作按钮" @click="filterPanel">{{ t('knoteDock.filter') }}</div>
         <!--        <setting-pop />-->
       </a-col>
     </a-row>
@@ -64,7 +66,8 @@ import { useData } from '@/components/knoteDock/src/hooks/useData'
 import DateSetting from '@/components/knoteDock/src/components/DateSetting/index.vue'
 import { ref } from 'vue'
 import { colorMap } from '@/components/knoteDock/src/config'
-import { LeftCircleFilled } from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const { refreshSiyuanKnotes, showNewKnote, panelDisplayMode, todayDailyDocId, createTodayDailyNote } = useData()
 
@@ -97,7 +100,7 @@ const segmentedOptions = ref<Array<Record<string, any>>>([
     value: '<',
     payload: {
       // icon: LeftCircleFilled,
-      descEn: '返回'
+      descEn: t('knoteDock.back')
     }
   }
 ])

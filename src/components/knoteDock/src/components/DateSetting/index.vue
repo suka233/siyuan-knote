@@ -4,75 +4,84 @@
       <!--      <span class="向前" @click="handlePre" :disabled="displayMode === 'all'">&lt;</span>-->
       <a-button @click="handlePre" type="text">&lt;</a-button>
     </a-col>
-    <a-col :span="16"
-      ><a-date-picker
-        v-model:value="selected"
-        :locale="locale"
-        :disabledDate="disabledDate"
-        @change="dateChange"
-        :bordered="false"
-        :allow-clear="false"
-        class="时间选择器"
-        inputReadOnly
-      >
-        <template #suffixIcon>
-          <SettingOutlined class="cursor-pointer!" />
-        </template>
-        <template #renderExtraFooter>
-          <div class="p-2">
-            <a-form>
-              <a-form-item label="展示粒度">
-                <a-radio-group v-model:value="displayMode" button-style="solid" @change="refreshSiyuanKnotes">
-                  <a-radio-button value="day">单日</a-radio-button>
-                  <a-radio-button value="all">全部</a-radio-button>
-                </a-radio-group>
-              </a-form-item>
-              <a-form-item label="展示笔记本">
-                <!--                <a-select-->
-                <!--                  :placeholder="`请选择笔记本`"-->
-                <!--                  class="w-full!"-->
-                <!--                  :options="siYuanNoteItems"-->
-                <!--                  v-model:value="dailyNotebookId"-->
-                <!--                  @change="handleChangeNotebook"-->
-                <!--                />-->
-                <a-dropdown>
-                  <template #overlay>
-                    <a-menu @click="handleChangeNotebook">
-                      <a-menu-item v-for="item in siYuanNoteItems" :key="item.value">
-                        {{ item.label }}
-                      </a-menu-item>
-                    </a-menu>
-                  </template>
-                  <a-button>
-                    {{ siYuanNoteItems.find((item) => item.value === dailyNotebookId)?.label ?? '请选择' }}
-                    <DownOutlined />
-                  </a-button>
-                </a-dropdown>
-              </a-form-item>
-              <a-form-item>
-                <template #label>
-                  <span>启用新版查询</span>&nbsp;
-                  <a-tooltip>
-                    <template #title>
-                      <p>- 此为实验性功能，如果有bug请及时反馈，感谢</p>
-                      <p>- 支持思源版本(2.11.1+)之后创建的任意路径格式的日记</p>
-                      <p>
-                        - 如果需要能够查询到以前的日记，可以使用'今日笔记'插件的[为过去的 Daily Note 补充文档属性]功能
-                      </p>
-                      <p>- 下载 '今日笔记' 插件，会有详细的指引</p>
+    <a-col :span="16">
+      <a-config-provider :locale="getLocale">
+        <a-date-picker
+          v-model:value="selected"
+          :locale="locale"
+          :disabledDate="disabledDate"
+          @change="dateChange"
+          :bordered="false"
+          :allow-clear="false"
+          class="时间选择器"
+          inputReadOnly
+        >
+          <template #suffixIcon>
+            <SettingOutlined class="cursor-pointer!" />
+          </template>
+          <template #renderExtraFooter>
+            <div class="p-2">
+              <a-form>
+                <a-form-item :label="t('knoteDock.displayGranularity')">
+                  <a-radio-group
+                    v-model:value="displayMode"
+                    button-style="solid"
+                    @change="refreshSiyuanKnotes"
+                    size="small"
+                  >
+                    <a-radio-button value="day">{{ t('knoteDock.singleDay') }}</a-radio-button>
+                    <a-radio-button value="all">{{ t('knoteDock.all') }}</a-radio-button>
+                  </a-radio-group>
+                </a-form-item>
+                <a-form-item :label="t('knoteDock.showNotebook')">
+                  <!--                <a-select-->
+                  <!--                  :placeholder="`请选择笔记本`"-->
+                  <!--                  class="w-full!"-->
+                  <!--                  :options="siYuanNoteItems"-->
+                  <!--                  v-model:value="dailyNotebookId"-->
+                  <!--                  @change="handleChangeNotebook"-->
+                  <!--                />-->
+                  <a-dropdown>
+                    <template #overlay>
+                      <a-menu @click="handleChangeNotebook">
+                        <a-menu-item v-for="item in siYuanNoteItems" :key="item.value">
+                          {{ item.label }}
+                        </a-menu-item>
+                      </a-menu>
                     </template>
-                    <QuestionCircleOutlined />
-                  </a-tooltip>
-                </template>
-                <a-switch v-model:checked="useNewQuery" @change="refreshSiyuanKnotes" />
-              </a-form-item>
-              <div class="p-2 text-center">
-                <a-button @click="createTodayDailyNote">点我创建今天的日记</a-button>
-              </div>
-            </a-form>
-          </div>
-        </template>
-      </a-date-picker>
+                    <a-button>
+                      {{
+                        siYuanNoteItems.find((item) => item.value === dailyNotebookId)?.label ??
+                        t('knoteDock.pleaseSelect')
+                      }}
+                      <DownOutlined />
+                    </a-button>
+                  </a-dropdown>
+                </a-form-item>
+                <a-form-item>
+                  <template #label>
+                    <span>{{ t('knoteDock.enableNewVersionQuery') }}</span
+                    >&nbsp;
+                    <a-tooltip>
+                      <template #title>
+                        <p>- {{ t('knoteDock.experimentalFeatureDisclaimer') }}</p>
+                        <p>- {{ t('knoteDock.supportAnyPathFormatDiary') }}</p>
+                        <p>- {{ t('knoteDock.queryPastDiaryNotePluginSuggestion') }}</p>
+                        <p>- {{ t('knoteDock.downloadTodayNotePluginGuide') }}</p>
+                      </template>
+                      <QuestionCircleOutlined />
+                    </a-tooltip>
+                  </template>
+                  <a-switch v-model:checked="useNewQuery" @change="refreshSiyuanKnotes" />
+                </a-form-item>
+                <div class="p-2 text-center">
+                  <a-button @click="createTodayDailyNote">{{ t('knoteDock.createTodayDiaryPrompt') }}</a-button>
+                </div>
+              </a-form>
+            </div>
+          </template>
+        </a-date-picker>
+      </a-config-provider>
     </a-col>
     <a-col :span="4">
       <!--      <span class="向后" @click="handleNext">&gt;</span>-->
@@ -81,12 +90,18 @@
   </a-row>
 </template>
 <script setup lang="ts">
-import locale from 'ant-design-vue/es/date-picker/locale/zh_CN'
+import en_US from 'ant-design-vue/es/date-picker/locale/en_US'
+import zh_CN from 'ant-design-vue/es/date-picker/locale/zh_CN'
 import { ref, watch } from 'vue'
 import dayjs from 'dayjs'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
 import { listNotebook } from '@/api/public'
 import { SettingOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
+import { useLocale } from '@/hooks/useLocale'
+const { t } = useI18n()
+const { locale } = useLocale()
+const getLocale = locale.value === 'zh_CN' ? zh_CN : en_US
 const selected = ref(dayjs())
 const {
   refreshSiyuanKnotes,

@@ -1,8 +1,48 @@
 {
   "openKNote": "打开KNote",
+  "restoreDefaultSettings": "恢复默认设置",
   "knoteDock": {
     "openToTarget": "点击即可跳转到对应的日记文档",
-    "onKNotes": "暂无可以展示的KNote",
-    "popconfirmTitle": "检测到今日日记还没有创建，是否创建？"
-  }
+    "noKNotes": "暂无可以展示的KNote",
+    "popconfirmTitle": "检测到今日日记还没有创建，是否创建？",
+    "create": "新建",
+    "refresh": "刷新",
+    "filter": "筛选",
+    "createTitle": "默认会在今天插入一条KNote",
+    "dontCreate": "不创建",
+    "back": "返回",
+    "save": "保存",
+    "closeWithoutSaving": "关闭不保存",
+    "pressEnterToFinishAndSave": "按下回车键结束编辑并保存",
+    "displayGranularity": "展示粒度",
+    "singleDay": "单日",
+    "all": "全部",
+    "showNotebook": "展示笔记本",
+    "pleaseSelect": "请选择",
+    "enableNewVersionQuery": "启用新版查询",
+    "experimentalFeatureDisclaimer": "此为实验性功能，如果有bug请及时反馈，感谢",
+    "supportAnyPathFormatDiary": "支持思源版本(2.11.1+)之后创建的任意路径格式的日记",
+    "queryPastDiaryNotePluginSuggestion": "如果需要能够查询到以前的日记，可以使用'今日笔记'插件的[为过去的 Daily Note 补充文档属性]功能",
+    "downloadTodayNotePluginGuide": "下载 '今日笔记' 插件，会有详细的指引",
+    "createTodayDiaryPrompt": "点我创建今天的日记",
+    "altClickForPreviewInstruction": "Alt+左键单击即可悬浮预览",
+    "settings": "设置",
+    "selectNotebook": "请选择笔记本"
+  },
+  "QuickInputGlobal": {
+    "pinWindow": "固定窗口",
+    "switchTypeWithArrowKeys": "键盘↑↓方向键可以快速切换类型，当前类型为：",
+    "expandWithShiftEnter": "shift+enter或者点我即可展开为思源编辑器",
+    "insertClipboardContentWithTab": "按下Tab快捷插入剪贴版内容：",
+    "tryTypingAndPressEnter": "Hi,尝试输入一些文字然后回车吧~"
+  },
+  "noDiaryForTodayCreateManually": "KNote:不存在{date}的日记，请手动新建或者",
+  "clickToQuickCreate": "点我一键新建",
+  "multipleDiariesForTodayCheck": "KNote:当前笔记本下存在多个{date}的日记，请检查",
+  "pleaseSetSiYuanNotebookFirst": "请先设置思源笔记本",
+  "noDiaryOnDatePleaseCreate": "KNote:不存在{date}的日记，请新建",
+  "dayNoteNonExistNewFail": "当天日记不存在，新建失败",
+  "todayDiaryCreatedSuccessfully": "KNote:今日日记创建成功",
+  "yesterdayYouAddedCallouts": "昨天您增加了{count}条Callout，记得整理哦",
+  "clickToCreateTodayDiary": "点我新建今天的日记文档"
 }

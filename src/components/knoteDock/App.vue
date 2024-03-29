@@ -1,6 +1,8 @@
 <template>
   <div>
-    <home-view />
+    <a-config-provider>
+      <home-view />
+    </a-config-provider>
   </div>
 </template>
 

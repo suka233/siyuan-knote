@@ -1,13 +1,13 @@
 悬浮设置按钮
 <template>
   <a-popover title="Hover title" trigger="click" placement="bottomRight">
-    <div class="操作按钮">设置</div>
+    <div class="操作按钮">{{ t('knoteDock.settings') }}</div>
     <template #content>
       <div class="w-300px">
         <a-form>
-          <a-form-item label="请选择笔记本">
+          <a-form-item :label="t('knoteDock.selectNotebook')">
             <a-select
-              :placeholder="`请选择笔记本`"
+              :placeholder="t('knoteDock.selectNotebook')"
               class="w-full!"
               :options="siYuanNoteItems"
               v-model:value="dailyNotebookId"
@@ -24,6 +24,8 @@
 import { ref } from 'vue'
 import { listNotebook } from '@/api/public'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const { dailyNotebookId, refreshSiyuanKnotes, selectedDay, getTargetDailyDocId, saveConfig } = useData()
 const siYuanNoteItems = ref([])
 listNotebook().then((res) => {

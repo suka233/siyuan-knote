@@ -4,7 +4,12 @@
       <a-col :span="24" class="标题栏">
         <a-row>
           <a-col :span="22">
-            <a-tooltip v-for="item in colorMap" :key="item.desc" :title="item.desc" :color="item.mainColor">
+            <a-tooltip
+              v-for="item in colorMap"
+              :key="item[getDescKey(locale)]"
+              :title="item[getDescKey(locale)]"
+              :color="item.mainColor"
+            >
               <a-tag
                 :color="`${knote.type === item.descEn ? item.mainColor : item.secondaryColor}`"
                 :style="{ cursor: 'pointer' }"
@@ -33,7 +38,7 @@
           </a-col>
           <a-col class="操作按钮" :span="2">
             <div class="flex justify-around">
-              <a-tooltip title="固定窗口">
+              <a-tooltip :title="t('QuickInputGlobal.pinWindow')">
                 <pushpin-outlined
                   class="cursor-pointer text-center"
                   @click="handlePin"
@@ -49,7 +54,7 @@
     <div class="包裹 relative" :style="computedStyle" ref="inputArea" v-show="editMode === 'simple'">
       <v-text-field
         v-model="knote.content"
-        :label="`键盘↑↓方向键可以快速切换类型，当前类型为：${knote.type}`"
+        :label="`${t('QuickInputGlobal.switchTypeWithArrowKeys')}${knote.type}`"
         allow-clear
         :placeholder="placeholder"
         @keyup="handleKeyup"
@@ -63,7 +68,7 @@
         :base-color="colorMap[knote.type].mainColor"
         :theme="theme"
       />
-      <a-tooltip title="shift+enter或者点我即可展开为思源编辑器" v-if="editMode === 'simple'">
+      <a-tooltip :title="t('QuickInputGlobal.expandWithShiftEnter')" v-if="editMode === 'simple'">
         <expand-alt-outlined
           class="cursor-pointer text-center absolute right-1rem bottom-1rem"
           @click="handleChangeMode"
@@ -96,6 +101,10 @@ import dayjs from 'dayjs'
 import { appendBlock, setBlockAttrs } from '@/api/public'
 import { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
 import { ExpandAltOutlined, PushpinOutlined, CloseOutlined } from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
+import { useLocale } from '@/hooks/useLocale'
+const { t, locale } = useI18n()
+const { getDescKey } = useLocale()
 const plugin = inject('plugin') as Plugin
 /** TODO 移植quickInput到QuickInputGlobal中
  * 需要注意的点：
@@ -340,9 +349,9 @@ const clipboardText = ref('')
 const inputRef = ref<HTMLElement | null>(null)
 const placeholder = computed(() => {
   if (clipboardText.value) {
-    return `按下Tab快捷插入剪贴版内容：${clipboardText.value}`
+    return `${t('QuickInputGlobal.insertClipboardContentWithTab')}${clipboardText.value}`
   } else {
-    return 'Hi,尝试输入一些文字然后回车吧~'
+    return t('QuickInputGlobal.tryTypingAndPressEnter')
   }
 })
 const handleKeyup = (e: KeyboardEvent) => {

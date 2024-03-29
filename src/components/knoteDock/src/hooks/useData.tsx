@@ -14,6 +14,8 @@ import dayjs from 'dayjs'
 import type { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
 import { message, Button, notification } from 'ant-design-vue'
 import { SmileOutlined } from '@ant-design/icons-vue'
+import { useLocale } from '@/hooks/useLocale'
+const { t } = useLocale()
 
 const showDrawer = ref(false)
 // 发送到思源笔记的方式: 插入到当天的dailyNote中，或者是插入到指定的笔记中
@@ -122,7 +124,7 @@ limit 100000;`
 
   const getTargetDailyDocId = async (date = selectedDay.value) => {
     if (!dailyNotebookId.value) {
-      return message.error('KNote: 请先设置思源笔记本')
+      return message.error(t('pleaseSetSiYuanNotebookFirst'))
     }
     const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${date}' and type = 'd'`
     const daySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
@@ -133,13 +135,15 @@ limit 100000;`
     await querySql(useNewQuery.value ? daySqlNew : daySql).then((res) => {
       if (res.data.length) {
         if (res.data.length > 1) {
-          message.info(`KNote:当前笔记本下存在多个${date}的日记，请检查`)
+          // message.info(`KNote:当前笔记本下存在多个${date}的日记，请检查`)
+          message.info(t('multipleDiariesForTodayCheck', { date }))
         }
         selectDateDailyDocId.value = res.data[0].id
         // 存在
         return res.data[0]
       } else {
-        return message.error(`KNote:不存在${date}的日记，请新建`)
+        // return message.error(`KNote:不存在${date}的日记，请新建`)
+        return message.error(t('noDiaryOnDatePleaseCreate', { date }))
       }
     })
 
@@ -153,7 +157,7 @@ limit 100000;`
     return await querySql(useNewQuery.value ? todaySqlNew : todaySql).then((res) => {
       if (res.data.length) {
         if (res.data.length > 1) {
-          message.info(`KNote:当前笔记本下存在多个${today.value}的日记，请检查`)
+          message.info(t('multipleDiariesInCurrentNotebook', { today: today.value }))
         }
         todayDailyDocId.value = res.data[0].id
         // 存在
@@ -164,11 +168,12 @@ limit 100000;`
             const handleClick = () => {
               createTodayDailyNote()
             }
+            console.log(t('knoteDock.noKNotes'))
             return (
               <span>
-                {`KNote:不存在${today.value}的日记，请手动新建或者`}
+                {t('noDiaryForTodayCreateManually', { date: today.value })}
                 <Button type={`link`} onClick={handleClick}>
-                  点我一键新建
+                  {t('clickToQuickCreate')}
                 </Button>
               </span>
             )
@@ -181,7 +186,7 @@ limit 100000;`
   // 获取指定日期的日记文档id
   const getDailyDocId = async (date) => {
     if (!dailyNotebookId.value) {
-      return message.error('KNote: 请先设置思源笔记本')
+      return message.error(t('pleaseSetSiYuanNotebookFirst'))
     }
     const daySql = `select * from blocks where box = '${dailyNotebookId.value}' and hpath like '/daily note/%${date}' and type = 'd'`
     const daySqlNew = `select B.*,A.name as knote_date from blocks as B join attributes as A on B.root_id = A.root_id where B.box = '${
@@ -192,12 +197,14 @@ limit 100000;`
     return querySql(useNewQuery.value ? daySqlNew : daySql).then((res) => {
       if (res.data.length) {
         if (res.data.length > 1) {
-          message.info(`KNote:当前笔记本下存在多个${date}的日记，请检查`)
+          // message.info(`KNote:当前笔记本下存在多个${date}的日记，请检查`)
+          message.info(t('multipleDiariesForTodayCheck', { date }))
         }
         // 存在
         return res.data[0].id
       } else {
-        return message.error(`KNote:不存在${date}的日记，请新建`)
+        // return message.error(`KNote:不存在${date}的日记，请新建`)
+        return message.error(t('noDiaryOnDatePleaseCreate', { date }))
       }
     })
   }
@@ -213,7 +220,8 @@ limit 100000;`
     return await querySql(useNewQuery.value ? todaySqlNew : todaySql).then((res) => {
       if (res.data.length) {
         if (res.data.length > 1) {
-          message.info(`KNote:当前笔记本下存在多个${today.value}的日记，请检查`)
+          // message.info(`KNote:当前笔记本下存在多个${today.value}的日记，请检查`)
+          message.info(t('multipleDiariesForTodayCheck', { date: today.value }))
         }
         todayDailyDocId.value = res.data[0].id
         // 存在
@@ -226,9 +234,11 @@ limit 100000;`
             }
             return (
               <span>
-                {`KNote:不存在${today.value}的日记，请手动新建或者`}
+                {/*{`KNote:不存在${today.value}的日记，请手动新建或者`}*/}
+                {t('noDiaryForTodayCreateManually', { date: today.value })}
                 <Button type={`link`} onClick={handleClick}>
-                  点我一键新建
+                  {/*点我一键新建*/}
+                  {t('clickToQuickCreate')}
                 </Button>
               </span>
             )
@@ -240,10 +250,12 @@ limit 100000;`
 
   const sendToSiYuan = async (knote: KNoteModel, docId: string = todayDailyDocId.value) => {
     if (!dailyNotebookId.value) {
-      return message.error('KNote:请先设置思源笔记本')
+      // return message.error('KNote:请先设置思源笔记本')
+      return message.error(t('pleaseSetSiYuanNotebookFirst'))
     }
     if (!docId) {
-      return message.error('KNote:当天日记不存在，新建失败')
+      // return message.error('KNote:当天日记不存在，新建失败')
+      return message.error(t('dayNoteNonExistNewFail'))
     }
     // 如果存在
     // 先插入到思源
@@ -316,7 +328,8 @@ limit 100000;`
       // 赋值todayDailyDocId
       // console.log(res)
       todayDailyDocId.value = res.data.id
-      message.success('KNote:今日日记创建成功')
+      // message.success('KNote:今日日记创建成功')
+      message.success(t('todayDiaryCreatedSuccessfully'))
       window.openFileByURL(`siyuan://blocks/${todayDailyDocId.value}`)
     })
   }
@@ -326,7 +339,8 @@ limit 100000;`
     const now = dayjs()
     const tomorrow = now.add(1, 'day').startOf('day')
     const ms = tomorrow.diff(now)
-    console.log(`knote:${ms}毫秒后刷新`)
+    // console.log(`knote:${ms}毫秒后刷新`)
+    console.log(`knote:${ms} milliseconds later to refresh`)
     setTimeout(async () => {
       // 查出todayDailyDocId下有多少条callout数据
       // 查出所有的callout
@@ -350,7 +364,8 @@ limit 100000;`
       notification.open({
         key: notifyKey,
         message: '🎉New Day~',
-        description: `昨天您增加了${count}条Callout，记得整理哦`,
+        // description: `昨天您增加了${count}条Callout，记得整理哦`,
+        description: t('yesterdayYouAddedCallouts', { count }),
         icon: <SmileOutlined style={{ color: '#1677ff' }} />,
         duration: null,
         btn: () => {
@@ -360,7 +375,8 @@ limit 100000;`
           }
           return (
             <Button type={`primary`} size={`small`} onClick={handleAdd}>
-              点我新建今天的日记文档
+              {/*点我新建今天的日记文档*/}
+              {t('clickToCreateTodayDiary')}
             </Button>
           )
         }

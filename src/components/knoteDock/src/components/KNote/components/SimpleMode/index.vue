@@ -3,7 +3,7 @@
     class="包裹 p-3px relative"
     @mouseenter="handleMouseOver"
     @mouseleave.self="handleMouseOut"
-    title="Alt+左键单击即可悬浮预览"
+    :title="t('knoteDock.altClickForPreviewInstruction')"
   >
     <!--    <v-card-->
     <!--      transition="scale-transition"-->
@@ -35,6 +35,8 @@ import { colorMap } from '../../../../config'
 import type { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
 import { inject, onUnmounted, ref } from 'vue'
 import { Plugin } from 'siyuan'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const plugin = inject('plugin')
 const props = defineProps<{
   data: KNoteModel

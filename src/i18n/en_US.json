@@ -1,9 +1,48 @@
 {
-  "openKNote": "openKNote",
+  "openKNote": "Open KNote",
+  "restoreDefaultSettings": "Restore default settings",
   "knoteDock": {
-    "openToTarget": "Click to jump directly to the corresponding diary document",
-    "onKNotes": "There are no KNotes available to display.",
-    "popconfirmTitle": "Detected that today's diary has not been created yet. Would you like to create it?"
-  }
-
+    "openToTarget": "Click to jump to the corresponding diary document",
+    "noKNotes": "No KNotes to display at the moment",
+    "popconfirmTitle": "Detected that today's diary has not been created, do you want to create one?",
+    "create": "Create",
+    "refresh": "Refresh",
+    "filter": "Filter",
+    "createTitle": "By default, a KNote will be inserted today",
+    "dontCreate": "Don't create",
+    "back": "Back",
+    "save": "Save",
+    "closeWithoutSaving": "Close without saving",
+    "pressEnterToFinishAndSave": "Press Enter to finish editing and save",
+    "displayGranularity": "Display granularity",
+    "singleDay": "Single day",
+    "all": "All",
+    "showNotebook": "Show notebook",
+    "pleaseSelect": "Please select",
+    "enableNewVersionQuery": "Enable new version query",
+    "experimentalFeatureDisclaimer": "This is an experimental feature, please report if there are bugs, thank you",
+    "supportAnyPathFormatDiary": "Supports any path format diary created after SiYuan version (2.11.1+)",
+    "queryPastDiaryNotePluginSuggestion": "If you need to be able to query past diaries, you can use the 'Today's Note' plugin's [Supplement Document Properties for Past Daily Notes] feature",
+    "downloadTodayNotePluginGuide": "Download the 'Today's Note' plugin for detailed guidance",
+    "createTodayDiaryPrompt": "Click me to create today's diary",
+    "altClickForPreviewInstruction": "Alt+Left click for hover preview",
+    "settings": "Settings",
+    "selectNotebook": "Please select a notebook"
+  },
+  "QuickInputGlobal": {
+    "pinWindow": "Pin window",
+    "switchTypeWithArrowKeys": "Use the keyboard ↑↓ arrow keys to quickly switch types, current type is:",
+    "expandWithShiftEnter": "Shift+Enter or click me to expand to SiYuan editor",
+    "insertClipboardContentWithTab": "Press Tab to quickly insert clipboard content:",
+    "tryTypingAndPressEnter": "Hi, try typing some text and then press Enter~"
+  },
+  "noDiaryForTodayCreateManually": "KNote: There is no diary for {date}, please create manually or",
+  "clickToQuickCreate": "Click me to create quickly",
+  "multipleDiariesForTodayCheck": "KNote: Multiple diaries for {date} exist under the current notebook, please check",
+  "pleaseSetSiYuanNotebookFirst": "Please set the SiYuan notebook first",
+  "noDiaryOnDatePleaseCreate": "KNote: There is no diary for {date}, please create",
+  "dayNoteNonExistNewFail": "The diary for the day does not exist, creation failed",
+  "todayDiaryCreatedSuccessfully": "KNote: Today's diary was created successfully",
+  "yesterdayYouAddedCallouts": "Yesterday you added {count} Callouts, remember to organize them",
+  "clickToCreateTodayDiary": "Click me to create today's diary document"
 }

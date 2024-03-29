@@ -19,7 +19,7 @@
         </div>
       </RecycleScroller>
     </div>
-    <div v-show="!allSiyuanKnotes.length">{{ $t('knoteDock.onKNotes') }}</div>
+    <div v-show="!allSiyuanKnotes.length">{{ t('knoteDock.noKNotes') }}</div>
     <quick-input v-model:visible="showQuickInput" />
   </div>
 </template>

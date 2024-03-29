@@ -4,8 +4,8 @@ import fs from 'fs'
 
 //Please write the "workspace/data/plugins" directory here
 //请在这里填写你的 "workspace/data/plugins" 目录
-// const targetDir = 'C:\\D\\Document\\siyuan-test\\data\\plugins'
-const targetDir = 'D:\\document\\other\\siyuan-test\\data\\plugins'
+const targetDir = 'C:\\D\\Document\\siyuan-test\\data\\plugins'
+// const targetDir = 'D:\\document\\other\\siyuan-test\\data\\plugins'
 //Like this
 // const targetDir = `H:\\SiYuanDevSpace\\data\\plugins`;
 //********************************************************************************************

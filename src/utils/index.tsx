@@ -13,6 +13,7 @@ import * as directives from 'vuetify/directives'
 import { createI18n, useI18n } from 'vue-i18n'
 import zh from '@/i18n/zh_CN.json'
 import en from '@/i18n/en_US.json'
+import { useLocale } from '@/hooks/useLocale'
 // 新建kmind tab页
 
 // 注册icon
@@ -56,12 +57,13 @@ export const initKNoteDock = async (plugin: Plugin) => {
           }
         }
       })
+      const { locale } = useLocale()
       const i18n = createI18n({
-        locale: 'en',
+        locale: locale.value,
         allowComposition: true,
         messages: {
-          'zh-CN': zh,
-          en: en
+          zh_CN: zh,
+          en_US: en
         }
       })
       knoteApp = createApp(KnoteDock).provide('plugin', plugin)

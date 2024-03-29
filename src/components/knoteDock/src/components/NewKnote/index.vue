@@ -3,10 +3,12 @@
     <div class="p-2">
       <a-row>
         <a-col :span="12"
-          ><div class="cursor-pointer text-3" @click="save">{{ dayjs().format('YYYY-MM-DD hh:mm') }} 保存</div></a-col
+          ><div class="cursor-pointer text-3" @click="save">
+            {{ `${dayjs().format('YYYY-MM-DD hh:mm')} ${t('knoteDock.save')}` }}
+          </div></a-col
         >
         <a-col :span="12" class="text-right"
-          ><span class="cursor-pointer text-3" @click="close">关闭不保存</span></a-col
+          ><span class="cursor-pointer text-3" @click="close">{{ t('knoteDock.closeWithoutSaving') }}</span></a-col
         >
       </a-row>
     </div>
@@ -22,7 +24,7 @@
         bg-color="transparent"
         :hide-details="true"
         :label="knote.type"
-        placeholder="按下回车键结束编辑并保存"
+        :placeholder="t('knoteDock.pressEnterToFinishAndSave')"
       />
     </div>
     <div class="尾部">
@@ -41,7 +43,7 @@
                 icon=""
                 @click="changeType(index as string)"
             /></template>
-            <span>{{ color.desc }}</span>
+            <span>{{ color[getDescKey(locale)] }}</span>
           </v-tooltip>
           <!--          <v-btn v-for="(color, index) in colorMap" :key="color.mainColor" :style="{ backgroundColor: color.mainColor }" size="x-small" density="compact" icon="" @click="changeType(index as string)" />-->
         </div>
@@ -56,7 +58,10 @@ import dayjs from 'dayjs'
 import { colorMap } from '@/components/knoteDock/src/config'
 import { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
-
+import { useI18n } from 'vue-i18n'
+import { useLocale } from '@/hooks/useLocale'
+const { t, locale } = useI18n()
+const { getDescKey } = useLocale()
 const { showNewKnote, sendToSiYuan } = useData()
 
 const knote = ref(new KNoteModel())

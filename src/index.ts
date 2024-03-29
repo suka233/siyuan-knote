@@ -19,6 +19,7 @@ import { setBlockAttrs } from '@/api/public'
 import { createI18n } from 'vue-i18n'
 import zh from './i18n/zh_CN.json'
 import en from './i18n/en_US.json'
+import { useLocale } from '@/hooks/useLocale'
 export default class KnotePlugin extends Plugin {
   // private isMobile!: boolean
   // public menuElement!: HTMLElement
@@ -52,6 +53,11 @@ export default class KnotePlugin extends Plugin {
     })
   }
   async onload() {
+    //
+    const { getLocaleType, locale, getDescKey } = useLocale()
+    this.getDescKey = getDescKey
+    this.locale = locale.value
+    await getLocaleType()
     // 注册图标
     registerIcon('iconKnote', '1024', knoteIcon)
 
@@ -90,7 +96,7 @@ export default class KnotePlugin extends Plugin {
     this.eventBus.on('ws-main', (e) => {
       // console.log(e)
       if (e.detail.cmd === 'databaseIndexCommit') {
-        console.log(`检测到合法：${e}`)
+        // console.log(`检测到合法：${e}`)
         refreshSiyuanKnotes()
 
         if (this.validDatabaseIndexCommit) {
@@ -244,7 +250,17 @@ export default class KnotePlugin extends Plugin {
       // const app = createApp(import('./components/QuickInputGlobal/index.vue')).provide('plugin', this)
       const app = createApp(QuickInputGlobal).provide('plugin', this)
       // const app = createApp(require('./components/QuickInputGlobal/index.vue')).provide('plugin', this)
-      app.use(vuetify).use(Antd).mount(quickInput)
+      const { getLocaleType } = useLocale()
+      await getLocaleType()
+      const i18n = createI18n({
+        locale: locale.value ?? 'zh_CN',
+        allowComposition: true,
+        messages: {
+          zh_CN: zh,
+          en_US: en
+        }
+      })
+      app.use(vuetify).use(Antd).use(i18n).mount(quickInput)
     }
 
     // 插入自定义css
@@ -273,10 +289,10 @@ export default class KnotePlugin extends Plugin {
     >&nbsp;
     </span>
     <span>
-    ${colorMap[item.description].desc}
+    ${colorMap[item.description][this.getDescKey(this.locale.value)]}
     </span>
     <span style="float:right;font-size: 0.8rem;color:darkgray">
-    可以使用的快捷指令${item.key.split('|').join('、')}
+    ${item.key.split('|').join('、')}
 </span>
 </div>
       `,
@@ -354,6 +370,7 @@ export default class KnotePlugin extends Plugin {
   }
 
   private blockIconEvent({ detail }: any) {
+    const { getDescKey, locale, t } = useLocale()
     // console.log(detail)
     if (detail.blockElements.length > 1) {
       return
@@ -386,7 +403,7 @@ export default class KnotePlugin extends Plugin {
     >&nbsp;
     </span>
     <span>
-    ${colorMap[key].desc}
+    ${colorMap[key][getDescKey(locale.value)]}
     </span>
 </div>
       `
@@ -409,7 +426,9 @@ export default class KnotePlugin extends Plugin {
     })
     const defaultBtn = document.createElement('button')
     defaultBtn.className = 'b3-menu__item'
-    defaultBtn.innerHTML = `<svg class="b3-menu__icon" style=""><use xlink:href="#iconRefresh"></use></svg><span class="b3-menu__label">恢复默认设置</span>`
+    defaultBtn.innerHTML = `<svg class="b3-menu__icon" style=""><use xlink:href="#iconRefresh"></use></svg><span class="b3-menu__label">${t(
+      'restoreDefaultSettings'
+    )}</span>`
     defaultBtn.onclick = () => {
       setBlockAttrs({
         id: selectId,
