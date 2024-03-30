@@ -4,7 +4,7 @@ import 'uno.css'
 import { knoteIcon } from './assets/icon'
 import { initKNoteDock, registerIcon } from '@/utils'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
-import { createApp } from 'vue'
+import { createApp, UnwrapRef } from 'vue'
 import QuickInputGlobal from './components/QuickInputGlobal/index.vue'
 import './assets/index.less'
 import Antd from 'ant-design-vue'
@@ -38,6 +38,8 @@ export default class KnotePlugin extends Plugin {
   private calloutId: string
   // 检测到了合法的databaseIndexCommit事件时，才解决Promise
   private validDatabaseIndexCommit: boolean
+  private getDescKey: (locale: string, key?: string) => string
+  private locale: UnwrapRef<string>
   constructor(options) {
     super(options)
     // this.tab = undefined
@@ -55,9 +57,9 @@ export default class KnotePlugin extends Plugin {
   async onload() {
     //
     const { getLocaleType, locale, getDescKey } = useLocale()
+    await getLocaleType()
     this.getDescKey = getDescKey
     this.locale = locale.value
-    await getLocaleType()
     // 注册图标
     registerIcon('iconKnote', '1024', knoteIcon)
 
@@ -277,6 +279,7 @@ export default class KnotePlugin extends Plugin {
   style="justify-content: space-between; width:100%;border-left: 0.2rem solid ${
     colorMap[item.description].mainColor
   };background-color: ${colorMap[item.description].secondaryColor};border-radius: 0.2rem;margin: 0.2rem 0;"
+  title="${item[this.getDescKey(this.i18n.lang, 'key')].split('|').join('、')}"
 >
     <span
     style="
@@ -289,10 +292,10 @@ export default class KnotePlugin extends Plugin {
     >&nbsp;
     </span>
     <span>
-    ${colorMap[item.description][this.getDescKey(this.locale.value)]}
+    ${colorMap[item.description][this.getDescKey(this.i18n.lang)]}
     </span>
-    <span style="float:right;font-size: 0.8rem;color:darkgray">
-    ${item.key.split('|').join('、')}
+    <span style="float:right;font-size: 0.8rem;color:darkgray;width:60%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;text-align: right">
+    ${item[this.getDescKey(this.i18n.lang, 'key')].split('|').join('、')}
 </span>
 </div>
       `,

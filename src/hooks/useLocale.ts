@@ -10,14 +10,14 @@ export const useLocale = () => {
   }
 
   // 临时用于colorMap的desc的切换
-  const getDescKey = (locale: string) => {
+  const getLocalKey = (locale: string, prefix = 'desc') => {
     switch (locale) {
       case 'zh_CN':
-        return 'desc'
+        return prefix
       case 'en_US':
-        return 'descEn'
+        return `${prefix}En`
       default:
-        return 'desc'
+        return prefix
     }
   }
 
@@ -47,7 +47,7 @@ export const useLocale = () => {
   return {
     getLocaleType,
     locale,
-    getDescKey,
+    getDescKey: getLocalKey,
     t
   }
 }

@@ -165,72 +165,84 @@ export const quickCommandMap = [
   //default
   {
     key: 'default|/default|默认|引用|quote|knote',
+    keyEn: 'default|/default|quote|knote',
     description: 'default',
     command: 'default'
   },
   // info
   {
     key: 'info|/info|xx|xinxi|信息',
+    keyEn: 'info|/info',
     description: 'info',
     command: 'info'
   },
   // light
   {
     key: 'light|/light|linggan|灵感|lg',
+    keyEn: 'light|/light',
     description: 'light',
     command: 'light'
   },
   // bell
   {
     key: 'bell|/bell|tixing|提醒|tx',
+    keyEn: 'bell|/bell',
     description: 'bell',
     command: 'bell'
   },
   // check
   {
     key: 'check|/check|right|/right|正确|zhengque|zq',
+    keyEn: 'check|/check',
     description: 'check',
     command: 'check'
   },
   // wrong
   {
     key: 'wrong|/wrong|error|/error|cuowu|错误|cw',
+    keyEn: 'wrong|/wrong',
     description: 'wrong',
     command: 'wrong'
   },
   // warn
   {
     key: 'warn|/warn|jinggao|警告|jg',
+    keyEn: 'warn|/warn',
     description: 'warn',
     command: 'warn'
   },
   // question
   {
     key: 'question|/question|wenhao|问题|wh|wt|问题|wenti|yiwen|yw',
+    keyEn: 'question|/question',
     description: 'question',
     command: 'question'
   },
   // error
   {
     key: 'error|/error|forbidden|/forbidden|jinzhi|禁止|jz',
+    keyEn: 'error|/error',
     description: 'error',
     command: 'error'
   },
   // bug
   {
     key: 'bug|/bug',
+    keyEn: 'bug|/bug',
     description: 'bug',
     command: 'bug'
   },
   // note
   {
-    key: 'note|/note|日记|注记|rj|zj',
+    key: 'note|/note|日记|注记|rj|zj|diary',
+    keyEn: 'note|/note|diary',
     description: 'note',
     command: 'note'
   },
   // pen
   {
     key: 'pen|/pen|记录|jl',
+    keyEn: 'pen|/pen',
     description: 'pen',
     command: 'pen'
   }
