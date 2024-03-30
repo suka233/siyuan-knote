@@ -32,6 +32,17 @@ The place it flows to is of course my favorite SiYuan Notes, but the most conven
 
 ## Update Log
 
+### v2.1.2 (March 20, 2024)
+ Fixes:
+
+- Fixed the bug where the slash menu internationalization failed
+
+
+### v2.1.1 (March 29, 2024)
+Fixes:
+
+-Fixed the error in version number display
+
 ### v2.1.0 (March 29, 2024)
 
 Added:
