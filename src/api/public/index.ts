@@ -11,7 +11,27 @@ enum Api {
   appendBlock = '/api/block/appendBlock',
   SetBlockAttrs = '/api/attr/setBlockAttrs',
   ListNotebook = '/api/notebook/lsNotebooks',
-  '创建日记' = '/api/filetree/createDailyNote'
+  '创建日记' = '/api/filetree/createDailyNote',
+  '当天日记插入块' = '/api/block/appendDailyNoteBlock'
+}
+
+/**
+ * 当天日记插入块
+ */
+export const appendDailyNoteBlock = ({
+  data,
+  dataType,
+  notebook
+}: {
+  data: string
+  dataType: 'markdown'
+  notebook: string
+}) => {
+  return 向思源请求数据(Api['当天日记插入块'], {
+    data,
+    dataType,
+    notebook
+  })
 }
 
 /**

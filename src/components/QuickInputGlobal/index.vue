@@ -97,8 +97,7 @@ import { Plugin, Protyle } from 'siyuan'
 import { computed, inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData } from '@/components/knoteDock/src/hooks/useData'
 import { colorMap, quickCommandMap } from '@/components/knoteDock/src/config'
-import dayjs from 'dayjs'
-import { appendBlock, setBlockAttrs } from '@/api/public'
+import { appendDailyNoteBlock, setBlockAttrs } from '@/api/public'
 import { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
 import { ExpandAltOutlined, PushpinOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
@@ -282,14 +281,19 @@ const send = (initMode: 'simple' | 'protyle' = 'simple') => {
 const sendToSiYuan = async (knote: KNoteModel) => {
   // 先获取当日笔记id
   await getConfig()
-  const data = await getTargetDailyDocId(dayjs().format('YYYY-MM-DD'))
-  // 如果存在
-  // 先插入到思源
-  const res = await appendBlock({
+  // const data = await getTargetDailyDocId(dayjs().format('YYYY-MM-DD'))
+  // // 如果存在
+  // // 先插入到思源
+  // const res = await appendBlock({
+  //   dataType: 'markdown',
+  //   // parentID: '20231113112300-s2a6pi6',
+  //   parentID: data.id,
+  //   data: `>${knote.content ?? ''}`
+  // })
+  const res = await appendDailyNoteBlock({
     dataType: 'markdown',
-    // parentID: '20231113112300-s2a6pi6',
-    parentID: data.id,
-    data: `>${knote.content ?? ''}`
+    data: `>${knote.content ?? ''}`,
+    notebook: dailyNotebookId.value
   })
 
   const blockId = res.data[0].doOperations[0].id
@@ -409,7 +413,7 @@ const handleTab = (e: KeyboardEvent) => {
 // endregion
 
 // region protyle输入模式
-const { getConfig, getTargetDailyDocId } = useData()
+const { getConfig, dailyNotebookId } = useData()
 // 渲染思源的protyle
 const wrapId = ref('')
 const targetId = ref('')
@@ -418,12 +422,17 @@ const protyleLoading = ref(false)
 const renderProtyle = async () => {
   // 先获取当日笔记id
   await getConfig()
-  const data = await getTargetDailyDocId(dayjs().format('YYYY-MM-DD'))
+  // const data = await getTargetDailyDocId(dayjs().format('YYYY-MM-DD'))
   // 根据id在文档末尾插入块
-  const res = await appendBlock({
+  // const res = await appendBlock({
+  //   dataType: 'markdown',
+  //   parentID: data.id,
+  //   data: `>`
+  // })
+  const res = await appendDailyNoteBlock({
     dataType: 'markdown',
-    parentID: data.id,
-    data: `>`
+    data: `>`,
+    notebook: dailyNotebookId.value
   })
   // 获取包裹id和目标id
   // 包裹id即这个callout的id，用来设置attr
