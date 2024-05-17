@@ -32,6 +32,16 @@ The place it flows to is of course my favorite SiYuan Notes, but the most conven
 
 ## Update Log
 
+### v2.1.3 (May 17, 2024)
+
+Fixes:
+
+- Fixed a bug where the KNote quick input box would insert content into the previous day's diary when crossing days in the SiYuan.
+
+Additions:
+
+- Added a feature that automatically creates a diary for the current day when there is no diary for today and content is recorded using the KNote quick input box.
+
 ### v2.1.2 (March 20, 2024)
  Fixes:
 
