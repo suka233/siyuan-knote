@@ -2,7 +2,7 @@
   "name": "knote-plugin",
   "author": "suka233",
   "url": "https://github.com/suka233/siyuan-knote",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "minAppVersion": "2.8.10",
   "backends": ["all"],
   "frontends": ["all"],

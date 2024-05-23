@@ -32,6 +32,16 @@ The place it flows to is of course my favorite SiYuan Notes, but the most conven
 
 ## Update Log
 
+### v2.1.4 (May 23, 2024)
+
+Note:
+
+- The new version of the function uses the latest API of SiYuan, please ensure that your SiYuan is version 3.0.15+.
+
+Additions:
+
+- Added support for configuring the insertion position of knote: you can choose to insert it at the top or bottom of the diary of the current day by default. The default is at the bottom. To change it, go to the right KNote dock bar, click the settings icon, and then change the insertion position.
+
 ### v2.1.3 (May 17, 2024)
 
 Fixes:
