@@ -1,14 +1,14 @@
 // 是否展示抽屉设置栏
 import { ref } from 'vue'
 import {
-  appendBlock,
   listFile,
   querySql,
   setBlockAttrs,
   putFile,
   putKnoteConfigFile,
   getFile,
-  createDailyNote
+  createDailyNote,
+  appendDailyNoteBlock
 } from '@/api/public'
 import dayjs from 'dayjs'
 import type { KNoteModel } from '@/components/knoteDock/src/model/KNoteModel'
@@ -52,6 +52,9 @@ const showQuickInput = ref(false)
 
 // 展示粒度：day,all
 const displayMode = ref<'day' | 'all'>('all')
+
+// 插入位置: top,bottom
+const insertPosition = ref<'top' | 'bottom'>('bottom')
 
 // 使用新版查询
 const useNewQuery = ref(false)
@@ -259,11 +262,17 @@ limit 100000;`
     }
     // 如果存在
     // 先插入到思源
-    const res = await appendBlock({
+    // const res = await appendBlock({
+    //   dataType: 'markdown',
+    //   // parentID: '20231113112300-s2a6pi6',
+    //   parentID: docId,
+    //   data: `>${knote.content}`
+    // })
+
+    const res = await appendDailyNoteBlock({
       dataType: 'markdown',
-      // parentID: '20231113112300-s2a6pi6',
-      parentID: docId,
-      data: `>${knote.content}`
+      data: `>${knote.content}`,
+      notebook: dailyNotebookId.value
     })
 
     const blockId = res.data[0].doOperations[0].id
@@ -297,20 +306,23 @@ limit 100000;`
       await putKnoteConfigFile({
         dailyNotebookId: '',
         displayMode: 'day',
-        useNewQuery: false
+        useNewQuery: false,
+        insertPosition: 'bottom'
       })
     } else {
       // 获取配置文件内容
       const {
         dailyNotebookId: _dailyNotebookId,
         displayMode: _displayMode,
-        useNewQuery: _useNewQuery
+        useNewQuery: _useNewQuery,
+        insertPosition: _insertPosition
       } = await getFile({
         path: '/data/storage/petal/knote/user.knoteconf'
       })
       dailyNotebookId.value = _dailyNotebookId ?? ''
       displayMode.value = _displayMode ?? 'day'
       useNewQuery.value = _useNewQuery ?? false
+      insertPosition.value = _insertPosition ?? 'bottom'
     }
   }
 
@@ -318,7 +330,8 @@ limit 100000;`
     putKnoteConfigFile({
       dailyNotebookId: dailyNotebookId.value,
       displayMode: displayMode.value,
-      useNewQuery: useNewQuery.value
+      useNewQuery: useNewQuery.value,
+      insertPosition: insertPosition.value
     })
   }
 
@@ -402,6 +415,7 @@ limit 100000;`
     getConfig,
     saveConfig,
     displayMode,
+    insertPosition,
     useNewQuery,
     panelDisplayMode,
     scrollTo,

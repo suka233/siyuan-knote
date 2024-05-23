@@ -1,5 +1,6 @@
 import { http, 向思源请求数据 } from '@/utils/request'
 import type { ISetBlockAttrsParam } from '@/api/public/siyaunTypes'
+import { useData } from '@/components/knoteDock/src/hooks/useData'
 enum Api {
   SQL = '/api/query/sql',
   PutFile = '/api/file/putFile',
@@ -12,12 +13,33 @@ enum Api {
   SetBlockAttrs = '/api/attr/setBlockAttrs',
   ListNotebook = '/api/notebook/lsNotebooks',
   '创建日记' = '/api/filetree/createDailyNote',
-  '当天日记插入块' = '/api/block/appendDailyNoteBlock'
+  '当天日记插入块' = '/api/block/appendDailyNoteBlock',
+  '当天日记插入前置块' = '/api/block/prependDailyNoteBlock'
+}
+
+/**
+ * 当天日记插入前置块
+ */
+export const prependDailyNoteBlock = ({
+  data,
+  dataType,
+  notebook
+}: {
+  data: string
+  dataType: 'markdown'
+  notebook: string
+}) => {
+  return 向思源请求数据(Api['当天日记插入前置块'], {
+    data,
+    dataType,
+    notebook
+  })
 }
 
 /**
  * 当天日记插入块
  */
+
 export const appendDailyNoteBlock = ({
   data,
   dataType,
@@ -27,10 +49,23 @@ export const appendDailyNoteBlock = ({
   dataType: 'markdown'
   notebook: string
 }) => {
-  return 向思源请求数据(Api['当天日记插入块'], {
-    data,
-    dataType,
-    notebook
+  const { getConfig, insertPosition } = useData()
+  return getConfig().then((res) => {
+    console.log(res)
+    switch (insertPosition.value) {
+      case 'top':
+        return prependDailyNoteBlock({
+          data,
+          dataType,
+          notebook
+        })
+      case 'bottom':
+        return 向思源请求数据(Api['当天日记插入块'], {
+          data,
+          dataType,
+          notebook
+        })
+    }
   })
 }
 
@@ -151,6 +186,7 @@ export interface IKnoteConfig {
   displayMode: 'day' | 'all'
   // 思源2.11.1之后更新了给daily note添加默认属性 custom-dailynote-yyyymmdd
   useNewQuery: boolean
+  insertPosition: 'top' | 'bottom'
 }
 export const putKnoteConfigFile = (target?: IKnoteConfig) => {
   return putFileDirect({

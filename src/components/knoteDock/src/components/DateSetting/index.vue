@@ -74,6 +74,17 @@
                   </template>
                   <a-switch v-model:checked="useNewQuery" @change="refreshSiyuanKnotes" />
                 </a-form-item>
+                <a-form-item :label="t('knoteDock.insertPosition')">
+                  <a-radio-group
+                    v-model:value="insertPosition"
+                    @change="refreshSiyuanKnotes"
+                    size="small"
+                    button-style="solid"
+                  >
+                    <a-radio-button value="top">{{ t('knoteDock.top') }}</a-radio-button>
+                    <a-radio-button value="bottom">{{ t('knoteDock.bottom') }}</a-radio-button>
+                  </a-radio-group>
+                </a-form-item>
                 <div class="p-2 text-center">
                   <a-button @click="createTodayDailyNote">{{ t('knoteDock.createTodayDiaryPrompt') }}</a-button>
                 </div>
@@ -108,6 +119,7 @@ const {
   selectedDay,
   getTargetDailyDocId,
   displayMode,
+  insertPosition,
   dailyNotebookId,
   useNewQuery,
   scrollTo,

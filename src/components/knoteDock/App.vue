@@ -20,6 +20,7 @@ const {
   getTargetDailyDocId,
   selectedDay,
   useNewQuery,
+  insertPosition,
   refreshSiyuanKnotes,
   newDayNotify
 } = useData()
@@ -35,7 +36,7 @@ getConfig().then(() => {
 })
 
 // 自动保存
-watch([dailyNotebookId, displayMode, useNewQuery], () => {
+watch([dailyNotebookId, displayMode, useNewQuery, insertPosition], () => {
   saveConfig()
 })
 </script>
