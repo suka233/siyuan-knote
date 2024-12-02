@@ -37,3 +37,5 @@ node_modules
 dev
 dist
 build
+
+helper.json

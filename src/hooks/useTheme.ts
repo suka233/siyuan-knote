@@ -12,6 +12,7 @@ export const useTheme = () => {
       left: 0 !important;
       width: 1.5rem !important;
       height: 1.5rem !important;
+      background-color: transparent !important;
     }
 
   [data-type='NodeBlockquote'].bq[updated]::after {
