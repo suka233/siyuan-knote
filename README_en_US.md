@@ -32,6 +32,12 @@ The place it flows to is of course my favorite SiYuan Notes, but the most conven
 
 ## Update Log
 
+### v2.1.5 (December 2, 2024)
+
+Fixes:
+
+- Fixed the display bug caused by the update of the SiYuan DOM (3.1.13+)
+
 ### v2.1.4 (May 23, 2024)
 
 Note:
